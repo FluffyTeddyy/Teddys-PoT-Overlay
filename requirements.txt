@@ -1,0 +1,14 @@
+# Exact versions this was tested with. PySide6-Essentials is the core of Qt only; the full
+# "PySide6" package adds ~400 MB (web engine etc.) that this app never uses.
+numpy==2.5.4
+opencv-python==5.0.0.93
+mss==10.2.0
+PySide6-Essentials==6.12.0
+rapidfuzz==3.14.6
+winrt-runtime==4.1.0
+winrt-Windows.Foundation==4!10.0.28000.2957
+winrt-Windows.Foundation.Collections==4!10.0.28000.2957
+winrt-Windows.Globalization==4!10.0.28000.2957
+winrt-Windows.Graphics.Imaging==4!10.0.28000.2957
+winrt-Windows.Media.Ocr==4!10.0.28000.2957
+winrt-Windows.Storage.Streams==4!10.0.28000.2957

@@ -1,0 +1,22 @@
+# Built or downloaded on each PC
+.venv/
+.cache/
+__pycache__/
+dist/
+*.zip
+data/maps/*
+!data/maps/PUT_MAPS_HERE.txt
+data/potservers/
+data/vulnona/
+
+# Personal: your settings, logs and debug images
+config.json
+data/quest_log.txt
+data/fish_buffs.json
+data/calibration.png
+data/locator_debug.png
+data/preview.png
+data/map_probe_*
+
+# Test screenshots and OCR reads show your game, chat and other players' names
+tests/fixtures/

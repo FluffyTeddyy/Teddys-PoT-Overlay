@@ -1,0 +1,17 @@
+{
+  "map": "_example",
+  "quests": [
+    {
+      "name": "Gather Ferns",
+      "aliases": [],
+      "color": "#7cff6b",
+      "points": [[1830.0, 2412.5], [1902.0, 2390.0]]
+    },
+    {
+      "name": "Explore the Waterfall",
+      "aliases": ["Waterfall"],
+      "color": "#3fd2ff",
+      "points": [[3120.0, 1044.0]]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+Put one full-size map image per game map here, e.g.
+
+    gondwa.png
+    panjura.png
+    isla_spiro.png
+
+The file name (without extension) is the map's name in the tray menu and in
+data/quests/<name>.json.
+
+Best source: screenshots of the in-game map screen stitched together, so the
+colours and style match the minimap as closely as possible. Bigger and sharper
+is better; the app scales it down to 4096 px for matching (map_work_max_dim).
