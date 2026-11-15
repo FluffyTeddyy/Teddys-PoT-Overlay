@@ -1,4 +1,6 @@
-# PoT Quest Overlay
+# Teddy's PoT Overlay
+
+**Download:** the zip from the [latest release](https://github.com/FluffyTeddyy/Teddys-PoT-Overlay/releases/latest), unzip, run `run.bat`. It updates itself after that.
 
 A small Windows overlay for **Path of Titans** that puts markers for your active quests on the in-game minimap.
 
