@@ -10,6 +10,7 @@ and creates a GitHub release with the zip attached. Needs Git and the GitHub CLI
 from __future__ import annotations
 
 import argparse
+import os
 import shutil
 import subprocess
 import sys
@@ -31,6 +32,8 @@ def exe(name: str, *fallbacks: str) -> str:
 
 GIT = exe("git", r"C:\Program Files\Git\cmd\git.exe")
 GH = exe("gh", r"C:\Program Files\GitHub CLI\gh.exe")
+# The GitHub CLI calls git itself: make sure it can find it (e.g. a window opened before Git was installed).
+os.environ["PATH"] = str(Path(GIT).parent) + os.pathsep + os.environ.get("PATH", "")
 
 
 def run(*args: str, capture: bool = False) -> str:
