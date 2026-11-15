@@ -4,7 +4,7 @@
     python -m tools.self_update --check    # only say whether one is out
 
 One small request to GitHub (about a second; skipped quietly when offline). If the latest release
-is newer than the VERSION file here, its zip (the same as make-release.bat builds) is downloaded,
+is newer than the VERSION file here, its zip (built by tools/make_release.py) is downloaded,
 unpacked into a temporary folder and copied over this folder. Your own files are never touched:
 config.json, the .venv, the map images and downloaded data, the quest log, your fish buff values,
 and quests you made in the quest editor (they live in data/quests and are kept by build_quests).

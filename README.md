@@ -19,9 +19,9 @@ It only reads pixels from the screen. It never touches game files or memory. The
 
 **Map images, item spawn points and quest data come from [Potservers](https://potservers.net)** (free API, used with credit). **Fresh water from [VulnonaMAP](https://vulnona.com/game/map/)** by Coco.N (its data is shared as "collective intelligence"; the author asks for a link beside work that uses it). Unofficial; Path of Titans belongs to Alderon Games.
 
-## Quick start (if a friend sent you this)
+## Quick start
 
-1. Unzip it somewhere **outside** Documents/Desktop, e.g. `C:\Games\pot-quest-overlay` (Windows' ransomware protection can block it inside Documents).
+1. Download `PoT-Quest-Overlay-<version>.zip` from the [latest release](https://github.com/FluffyTeddyy/Teddys-PoT-Overlay/releases/latest) and unzip it somewhere **outside** Documents/Desktop, e.g. `C:\Games\pot-quest-overlay` (Windows' ransomware protection can block it inside Documents).
 2. Double-click **`run.bat`**. The first time, it sets itself up: it finds Python 3.12 (or offers to install it), creates its own `.venv` folder, installs the packages (~200 MB download, a few minutes) and downloads the maps (~21 MB). After that it starts in a second or two.
 3. In Path of Titans use **Windowed Fullscreen / Borderless**.
 4. No setup for your screen size: the game's HUD scales with screen height from the top-right corner, so the app works out where the minimap and quest list are for any resolution (tested at 1080p, 1200p, 1440p and 4K). It also reads the game's own *HUD Scale* setting. Only if markers look off (unusual HUD settings) run `calibrate.bat`: have the game open, switch to it within 5 seconds, then drag a box around the minimap (Enter) and the quest list (Enter). That's remembered per resolution.
@@ -30,11 +30,11 @@ It only reads pixels from the screen. It never touches game files or memory. The
 
 The overlay updates itself: each time `run.bat` starts, it asks GitHub (one quick request) whether a newer version is out, and if so downloads and installs it before starting, then shows what changed. Your own files are never touched: `config.json`, the `.venv`, map images, downloaded data, the quest log, your fish buff values and quests you made in the quest editor. Offline? It just starts the version you have. Turn it off with `"check_for_app_updates": false` in config.json.
 
-**Publishing a new version** (for the person who owns the GitHub repo): run **`publish-release.bat`**, type what changed, done. It bumps the version, builds the zip, pushes to GitHub and creates a release; friends get it the next time they start the overlay. Needs Git and the GitHub CLI, signed in (`gh auth login`).
+## Getting it / sharing it
 
-## Sharing with friends
+Everyone downloads it from GitHub: the zip on the [latest release](https://github.com/FluffyTeddyy/Teddys-PoT-Overlay/releases/latest) (about 0.5 MB: the code and quest data; `run.bat` sets up the rest on first start). To share it, send the link. Updates arrive by themselves.
 
-Send them the zip from the latest GitHub release once; after that it updates itself. Or run **`make-release.bat`**. It builds `dist\PoT-Quest-Overlay-<date>.zip` (about 0.3 MB) with just the code and quest data; the `.venv`, map images and caches are rebuilt by `setup.bat` on their PC. Tests and debug images aren't included (the test screenshots show your game and chat), and neither is your `config.json`: friends start with the default settings.
+(For the maintainer: `python -m tools.publish_release "what changed"` bumps the version, builds the zip, pushes and creates the GitHub release.)
 
 ## Setup
 
@@ -79,7 +79,7 @@ The update itself is **`update-data.bat`** (about 15 minutes: every quest is re-
 - downloads map images only if they changed,
 - continues where it stopped if it gets interrupted (just run it again).
 
-Afterwards pick *Reload config and quests* in the tray menu (or restart the overlay). Quests you made yourself in the quest editor are kept; edits to imported quests are replaced. To share the new data with friends, run `make-release.bat` and send the new zip.
+Afterwards pick *Reload config and quests* in the tray menu (or restart the overlay). Quests you made yourself in the quest editor are kept; edits to imported quests are replaced. Every PC updates its own quest data this way, so there's nothing to send around.
 
 The same from a terminal:
 

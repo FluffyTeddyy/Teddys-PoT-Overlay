@@ -1,6 +1,6 @@
-"""Build a small zip to share: code + quest data only.
+"""Build the release zip that goes on GitHub (maintainer tool; tools.publish_release runs it).
 
-    python -m tools.make_release        # -> dist/PoT-Quest-Overlay-<date>.zip
+    python -m tools.make_release        # -> dist/PoT-Quest-Overlay-<version>.zip
 
 Left out (rebuilt by setup.bat on the other PC): .venv, .cache, map images, raw Potservers data.
 Also left out: tests (their screenshots show your game, chat names included), debug images, and
@@ -29,7 +29,7 @@ INCLUDE = [
     "data/freshwater/*.json",
     "data/maps/PUT_MAPS_HERE.txt",
 ]
-EXCLUDE_NAMES = {"make_release.py"}
+EXCLUDE_NAMES = {"make_release.py", "publish_release.py"}  # maintainer tools, not for players
 
 
 def files() -> list[Path]:
