@@ -48,6 +48,10 @@ Everyone downloads it from GitHub: the zip on the [latest release](https://githu
 2. **Screen positions** are worked out automatically for any resolution (see Quick start). Only if markers look off, run `calibrate.bat`, switch to the game within 5 seconds, and drag a box around the minimap (Enter), then around the quest list (Enter).
 3. **Play:** run `run.bat`. The app sits in the system tray; right-click the icon for options. The map is detected automatically.
 
+## Start it together with the game
+
+Tray menu → **Make desktop shortcut: Path of Titans + Overlay**. That shortcut opens the Alderon Games Launcher and the overlay together; click Play as usual. (The launcher has to start the game itself: it signs you in each time, so the game can't be started directly.) Until the game is running the overlay doesn't look at your screen at all, it only checks every 3 seconds whether the game's process exists; then it starts tracking, and it closes when you quit the game. The launcher is found wherever it's installed (its Windows uninstall entry or its `alderon-games://` link), and the shortcut gets its icon. Plain `run.bat` still works as before.
+
 ## Tray menu
 
 | Item | What it does |

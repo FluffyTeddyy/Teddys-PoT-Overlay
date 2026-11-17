@@ -24,7 +24,7 @@ from PySide6.QtGui import (  # noqa: E402
 from PySide6.QtWidgets import QApplication, QMenu, QMessageBox, QSystemTrayIcon  # noqa: E402
 
 from . import config as C  # noqa: E402
-from . import fishbuffs, freshwater  # noqa: E402
+from . import fishbuffs, freshwater, gamelaunch  # noqa: E402
 from .capture import ScreenGrabber  # noqa: E402
 from .locator import Fix, MapLocator, build_minimap_mask  # noqa: E402
 from .mapdetect import MultiMapTracker  # noqa: E402
@@ -518,8 +518,16 @@ def make_icon() -> QIcon:
 
 
 class App:
-    def __init__(self, qapp: QApplication):
+    GAME_CHECK_MS = 3000         # with_game: how often the process list is checked
+    GIVE_UP_WAITING_S = 30 * 60  # with_game: quit if the game never starts
+
+    def __init__(self, qapp: QApplication, with_game: bool = False):
         self.qapp = qapp
+        self.with_game = with_game
+        # with_game: True until Path of Titans is running; no screen capture meanwhile.
+        self.waiting_for_game = with_game and not gamelaunch.game_running()
+        self._game_misses = 0
+        self._wait_started = time.monotonic()
         grab = ScreenGrabber(C.load_config()["monitor"])
         self.monitor = grab.monitor
         grab.close()
@@ -559,7 +567,22 @@ class App:
             except ValueError as e:
                 log.warning("%s", e)
 
-        self.start_workers()
+        if self.waiting_for_game:
+            self.tray.setToolTip("PoT Quest Overlay - waiting for Path of Titans (click Play in the launcher)")
+            if gamelaunch.start_launcher():
+                self.tray.showMessage("PoT Quest Overlay", "Opening the Alderon Games Launcher. Click Play: "
+                                      "the overlay starts by itself once the game is running.",
+                                      QSystemTrayIcon.Information, 6000)
+            else:
+                self.tray.showMessage("PoT Quest Overlay", "Couldn't find the Alderon Games Launcher. Start "
+                                      "Path of Titans as usual: the overlay starts once the game is running.",
+                                      QSystemTrayIcon.Information, 8000)
+        else:
+            self.start_workers()
+        if self.with_game:
+            self._game_timer = QTimer()
+            self._game_timer.timeout.connect(self._check_game)
+            self._game_timer.start(self.GAME_CHECK_MS)
         self.overlay.show()
         qapp.aboutToQuit.connect(self.shutdown)
 
@@ -575,6 +598,24 @@ class App:
         self.updater.available.connect(self.on_data_update)
         if self.cfg.get("check_for_data_updates", True):
             self.updater.check()
+
+    def _check_game(self) -> None:
+        """with_game: start when Path of Titans is running, quit when it's closed. Only looks at the
+        process list (cheap), never the screen."""
+        running = gamelaunch.game_running()
+        if self.waiting_for_game:
+            if running:
+                self.waiting_for_game = False
+                self.tray.setToolTip("PoT Quest Overlay")
+                self.start_workers()
+            elif time.monotonic() - self._wait_started > self.GIVE_UP_WAITING_S:
+                log.info("Path of Titans didn't start; quitting")
+                self.qapp.quit()
+            return
+        self._game_misses = 0 if running else self._game_misses + 1
+        if self._game_misses >= 2:  # gone for two checks in a row: the game was closed
+            log.info("Path of Titans closed; quitting")
+            self.qapp.quit()
 
     def _load_cfg(self) -> dict:
         cfg = C.load_config()
@@ -619,10 +660,14 @@ class App:
         self._apply_fish_buffs()  # also picks up edited data/fish_buffs.json
         self.active = []
         self._build_menu()
-        self.start_workers()
+        if not self.waiting_for_game:
+            self.start_workers()
 
     def refresh_quests(self) -> None:
         """F9 / tray: re-read the quest list now."""
+        if self.waiting_for_game:
+            self.overlay.flash("waiting for Path of Titans to start")
+            return
         if self.quests is None:
             self.overlay.flash("quest reading is off (Show all quests?)")
             return
@@ -865,6 +910,7 @@ class App:
                        lambda: QDesktopServices.openUrl(QUrl.fromLocalFile(str(C.DATA_DIR / "quest_log.txt"))))
         menu.addAction("Quest editor...", lambda: self.run_tool("tools.quest_editor"))
         menu.addAction("Calibrate screen regions...", lambda: self.run_tool("tools.calibrate"))
+        menu.addAction("Make desktop shortcut: Path of Titans + Overlay", self.make_game_shortcut)
         menu.addAction("Reload config and quests", self.restart)
         if getattr(self, "_update_proc", None) is not None:
             self.act_update = menu.addAction(self._update_text())
@@ -1007,6 +1053,21 @@ class App:
         self.proc.finished.connect(lambda *_: self.restart())
         self.proc.start(sys.executable, ["-m", module])
 
+    def make_game_shortcut(self) -> None:
+        """Tray: a desktop shortcut that opens the Alderon launcher and this overlay together."""
+        try:
+            lnk = gamelaunch.create_shortcut(C.ROOT)
+        except Exception as e:
+            QMessageBox.warning(None, "PoT Quest Overlay", f"Couldn't create the shortcut:\n{e}")
+            return
+        found = gamelaunch.find_launcher() is not None
+        self.tray.showMessage(
+            "PoT Quest Overlay",
+            f"'{lnk.stem}' is on your desktop. It opens the Alderon Games Launcher"
+            + ("" if found else " (not found on this PC: start the game yourself)")
+            + " and the overlay, which waits for the game without using the screen and closes with it.",
+            QSystemTrayIcon.Information, 8000)
+
     def shutdown(self) -> None:
         self.stop_workers()
         for hk in (self.hotkey, self.refresh_hotkey):
@@ -1033,27 +1094,8 @@ def main() -> int:
             f"No map images found in\n{C.MAPS_DIR}\n\nRun setup.bat to download them.",
         )
         return 1
-    # Positions are in screen pixels: use the built-in (or your calibrated) layout for this screen
-    # size. Only an untested resolution needs calibrating.
-    grab = ScreenGrabber(cfg["monitor"])
-    size = (grab.monitor["width"], grab.monitor["height"])
-    grab.close()
-    if not C.apply_layout(cfg, *size):
-        known = ", ".join(C.LAYOUT_PRESETS)
-        r = QMessageBox.question(
-            None, "PoT Quest Overlay",
-            f"Your screen is {size[0]}x{size[1]}. Positions are built in for {known}, so this "
-            "screen needs a one-time calibration.\n\n"
-            "Run it now? (Have Path of Titans open: you'll get 5 seconds to switch to it.)",
-            QMessageBox.Yes | QMessageBox.No,
-        )
-        if r != QMessageBox.Yes:
-            return 1
-        import subprocess
-
-        subprocess.run([sys.executable, "-m", "tools.calibrate"], cwd=str(C.ROOT))
-        cfg = C.load_config()
-        if not C.apply_layout(cfg, *size):
-            return 1
-    app = App(qapp)  # noqa: F841 (keeps everything alive)
+    # Screen positions are worked out for any resolution (C.apply_layout, in App).
+    # --with-game (the "Path of Titans + Overlay" desktop shortcut): open the Alderon launcher,
+    # wait for the game without capturing the screen, and quit when the game closes.
+    app = App(qapp, with_game="--with-game" in sys.argv)  # noqa: F841 (keeps everything alive)
     return qapp.exec()

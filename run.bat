@@ -12,5 +12,7 @@ if defined NEEDSETUP (
 )
 rem Newer version of the overlay on GitHub? Installs it first (quick; skipped when offline).
 ".venv\Scripts\python.exe" -m tools.self_update
-".venv\Scripts\python.exe" -m potoverlay
+rem (--with-game, from the "Path of Titans + Overlay" desktop shortcut: opens the Alderon launcher too,
+rem waits for the game and closes with it.)
+".venv\Scripts\python.exe" -m potoverlay %*
 if errorlevel 1 pause
