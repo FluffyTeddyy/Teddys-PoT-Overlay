@@ -237,21 +237,45 @@ class PanelEntry:
     titles: list[str] = field(default_factory=list)
     objectives: list[str] = field(default_factory=list)
     done: list[bool] = field(default_factory=list)
+    # A Hoard event's item list ("Citrine Quartz", "Opal Chunk", ...), as read.
+    items: list[str] = field(default_factory=list)
 
 
-HOARD_LABEL = "Hoard: Scavenger"
 HOARD_KEY = "title:hoard"
-# Lines that are never a quest title: the Hoard event's stats and timers, and "Time Left" lines.
-_not_title = re.compile(r"^(tier \d|reward|rank\b|score\b|top\b|time left)")
+HOARD_TYPES = ("Gemstones", "Beachcomber", "Scavenger")  # seen so far; others are read off the HUD
+# Lines that are never a quest title: the Hoard event's stats and timers, its "Collect as much as
+# you can" line, and "Time Left" lines.
+_not_title = re.compile(r"^(tier \d|reward|rank\b|score\b|top\b|time left|collect as much)")
 _list_sep = re.compile(r"[,;]|(?<!\d)\s*/\s*(?!\s*\d)")  # item list separators (a "/" not in "3/15")
 _verb_any = re.compile(r"^.?.?(c\w{1,2}llect|collect|del\w{0,2}ver|restore|kill|hunt|find|gather|go|visit|reach)\b")
 _wraps = re.compile(r"\b(by|at|to|the|and|of|a|an|in|for|from|with|your)$")
 
 
 def is_hoard_title(text: str) -> bool:
-    """The "Hoard: Scavenger" event quest ("Scavenge from the Dead" is a normal quest)."""
+    """A "Hoard: Gemstones" / "Hoard: Scavenger" ... event quest ("Scavenge from the Dead" is a
+    normal quest)."""
     n = normalize(text)
     return "hoard" in n or "scavenger" in n
+
+
+def hoard_label(title: str) -> str:
+    """"Hoard;GemstoneS" -> "Hoard: Gemstones". Known types are matched loosely (OCR noise), any
+    other is taken as read."""
+    n = normalize(title)
+    rest = n.split("hoard", 1)[1].strip() if "hoard" in n else n
+    rest = " ".join(w for w in rest.split() if w.isalpha())
+    if rest:
+        best = max(HOARD_TYPES, key=lambda t: fuzz.ratio(rest, t.lower()))
+        if fuzz.ratio(rest, best.lower()) >= 75:
+            return f"Hoard: {best}"
+        return f"Hoard: {rest.title()}"
+    return "Hoard"
+
+
+def _split_items(line: str) -> list[str]:
+    """"Citrine Quartz, Opal Chunk„Amber," -> ["Citrine Quartz", "Opal Chunk", "Amber"]."""
+    parts = re.split(r"[,;„*•/]+", line)
+    return [" ".join(re.sub(r"[^A-Za-z' ]+", " ", p).split()) for p in parts if re.search(r"[A-Za-z]{3}", p)]
 
 
 def parse_panel(lines: list[str]) -> list[PanelEntry]:
@@ -269,8 +293,12 @@ def parse_panel(lines: list[str]) -> list[PanelEntry]:
         # The Hoard event's item lists ("Bones, Snake Shed, Peeling Bark, ..."; OCR may turn the
         # commas into slashes, or put a stray dash in front), its stats ("Tier 2", "Rank: 6
         # Score: 28", "Top: ...") and "Time Left" lines are neither titles nor objectives.
-        if (_list_sep.search(line) and not _verb_any.match(stripped) and not _progress.search(line)) \
-                or _not_title.match(stripped):
+        if _not_title.match(stripped):
+            continue
+        if _list_sep.search(line) and not _verb_any.match(stripped) and not _progress.search(line) \
+                and not is_hoard_title(line):  # "Hoard;Gemstones" is a title, not an item list
+            if cur is not None and any(is_hoard_title(t) for t in cur.titles):
+                cur.items += _split_items(line)  # the Hoard event's item list
             continue
         # Objectives start with "- ", but OCR sometimes loses or mangles the dash ("JCollect 5 ...").
         # Titles never have a progress counter, so a line ending in "3/5" is an objective too.
@@ -438,7 +466,9 @@ class ActiveQuestTracker:
         for e in parse_panel(lines):
             if any(is_hoard_title(t) for t in e.titles):
                 # The Hoard event: not in the catalog; the app shows all its items instead.
-                out.append(Detection(HOARD_KEY, frozenset(), None, HOARD_LABEL, HOARD_LABEL))
+                label = hoard_label(next(t for t in e.titles if is_hoard_title(t)))
+                # Its "candidates" are the item names read (the app turns those into markers).
+                out.append(Detection(HOARD_KEY, frozenset(e.items), None, label, label))
                 e.titles = [t for t in e.titles if not is_hoard_title(t)]
             # Title lines: each one alone, or two lines joined when a long title wrapped.
             singles: list[tuple[set[str], str]] = []

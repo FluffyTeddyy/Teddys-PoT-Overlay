@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from dataclasses import dataclass
 
 import numpy as np
@@ -61,18 +62,53 @@ FOOD_GROUPS = [
 LAYERS = [LayerKind(kid, label, g.color, g.style, g.name) for g in FOOD_GROUPS for kid, label in g.items]
 BY_ID = {k.id: k for k in LAYERS}
 
-# The "Hoard: Scavenger" event quest: pick up as much as you can of a fixed list of items (the same
-# everywhere). Potservers doesn't list the event, so while it's in the quest list every spawn of
-# these items is shown, as one layer. Potservers marker kinds for the list the HUD shows: Bones,
-# Snake Shed, Peeling Bark, Cicada Molt, Branches, Wind Blown Branches, Turtle Shell, Charred Wood,
-# Ammonites, Pearlescent Shells, Barnacle, Jellyfish, Coral Chunks, Snagged Fur, Shark Teeth,
-# Sand Dollars, Fish Bones, Seashells, Clam, Colorful Shell, Cuttlefish Bone.
-HOARD_KINDS = (
-    "bones", "snake_shed", "peeling_bark", "cicada", "branches", "wind_blown_branches", "turtle_shell",
-    "charred_wood", "ammonites", "pearlescent_shells", "barnacles", "jellyfish", "coral", "snagged_fur",
-    "shark_jaw", "sand_dollars", "fish_bones", "seashells", "clams", "color_shells", "cuttlefish",
-)
-HOARD = LayerKind("hoard", "Hoard: Scavenger items", "#ffe14d", "dot", "Hoard")
+# "Hoard: <type>" event quests: collect as much as you can of a list of items, shown under the
+# title in the quest list. Potservers doesn't list these events, so while one is in the quest list
+# every spawn of its items is shown, as one layer. The lists as the HUD shows them (names match
+# Potservers' marker names); a Hoard type not listed here uses the item list read from the HUD.
+HOARD_LISTS = {
+    "Gemstones": ["Citrine Quartz", "Opal Chunk", "Amber", "Bloodstones", "Pearl", "Emerald", "Obsidian Chunk"],
+    "Beachcomber": ["Clam", "Starfish", "Turtle Shell", "Pearl", "Shark Teeth", "Seashells", "Sand Dollars",
+                    "Fish Bones", "Jellyfish", "Periwinkle", "Shark Egg", "Limpet", "Coral Chunks", "Anemone",
+                    "Cuttlefish Bone", "Colorful Shell", "Bleached Corals", "Barnacle", "Lake Sponge"],
+    "Scavenger": ["Bones", "Snake Shed", "Peeling Bark", "Cicada Molt", "Branches", "Wind Blown Branches",
+                  "Turtle Shell", "Charred Wood", "Ammonites", "Pearlescent Shells", "Barnacle", "Jellyfish",
+                  "Coral Chunks", "Snagged Fur", "Shark Teeth", "Sand Dollars", "Fish Bones", "Seashells", "Clam",
+                  "Colorful Shell", "Cuttlefish Bone"],
+}
+HOARD_COLOR = "#ffe14d"
+# HUD names that differ from Potservers' marker names.
+_HOARD_ALIASES = {"cicada molt": "cicada"}
+
+
+def _words(s: str) -> str:
+    return " ".join(re.sub(r"[^a-z ]+", " ", s.lower()).split())
+
+
+def hoard_kinds(markers: list[dict], items) -> list[str]:
+    """Potservers marker kinds for item names as the HUD shows them ("Citrine Quartz", "Clam"...).
+    The whole name must match closely (a marker named "Clam, Scallop & Conch" counts as each part),
+    so "Fish Bones" isn't "Bones" and "Starfish" isn't "Glow Starfish". Misread names that match
+    nothing are ignored."""
+    from rapidfuzz import fuzz
+
+    cands = []  # (normalized name or part, kind)
+    for m in markers:
+        if not m.get("points"):
+            continue
+        name = _words(m.get("name", ""))
+        cands.append((name, m["id"]))
+        cands += [(_words(p), m["id"]) for p in re.split(r"[,&]", m.get("name", "")) if _words(p) != name]
+    out: list[str] = []
+    for item in items:
+        w = _words(item)
+        w = _HOARD_ALIASES.get(w, w)
+        if len(w) < 3:
+            continue
+        score, kind = max(((fuzz.ratio(w, c), k) for c, k in cands), default=(0.0, ""))
+        if score >= 85 and kind not in out:
+            out.append(kind)
+    return out
 
 
 @dataclass
@@ -112,14 +148,25 @@ def load_layers(map_name: str, kinds: list[str]) -> list[Layer]:
     return out
 
 
-def hoard_layer(map_name: str) -> Layer | None:
-    """Every spawn of the Hoard: Scavenger items on this map, as one layer."""
+def hoard_type(label: str) -> str:
+    """"Hoard: Gemstones" -> "Gemstones" (the label the quest reader gives the event)."""
+    return label.split(":", 1)[1].strip() if ":" in label else ""
+
+
+def hoard_layer(map_name: str, label: str, items_read=()) -> Layer | None:
+    """Every spawn on this map of the items of the Hoard event called `label` ("Hoard: Gemstones").
+    Known Hoard types use their built-in list; others use the item names read from the HUD."""
     data = _map_data(map_name)
     if not data:
         return None
-    pts = [np.asarray(m["points"], np.float64).reshape(-1, 2) for m in data.get("markers", [])
-           if m["id"] in HOARD_KINDS and m.get("points")]
-    return Layer(HOARD, np.vstack(pts) * (IMAGE_SIZE / GRID)) if pts else None
+    markers = data.get("markers", [])
+    names = HOARD_LISTS.get(hoard_type(label)) or list(items_read)
+    kinds = set(hoard_kinds(markers, names))
+    pts = [np.asarray(m["points"], np.float64).reshape(-1, 2) for m in markers if m["id"] in kinds and m.get("points")]
+    if not pts:
+        return None
+    kind = LayerKind("hoard", f"{label} items" if label else "Hoard items", HOARD_COLOR, "dot", "Hoard")
+    return Layer(kind, np.vstack(pts) * (IMAGE_SIZE / GRID))
 
 
 def _map_data(map_name: str) -> dict | None:

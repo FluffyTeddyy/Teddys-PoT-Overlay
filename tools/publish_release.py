@@ -69,7 +69,7 @@ def main() -> int:
     zip_path = ROOT / "dist" / f"PoT-Quest-Overlay-{new}.zip"
 
     run(GIT, "add", "-A")
-    run(GIT, "commit", "-m", f"v{new}: {args.notes}")
+    run(GIT, "commit", "-m", f"v{new}: {args.notes}", "-m", "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>")
     run(GIT, "push")
     run(GH, "release", "create", f"v{new}", str(zip_path), "--title", f"v{new}", "--notes", args.notes)
     print(f"\nPublished v{new}. Friends get it the next time they start run.bat.", flush=True)

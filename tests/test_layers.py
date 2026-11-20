@@ -248,16 +248,50 @@ def test_hud_objectives_and_hoard() -> None:
           names == ["Chanterelle Mushroom", "Death Cap"] and len(set(cols.values())) == 2, f"{names} {cols}")
     check("their spawns don't overlap", not set(picked[0][0].points) & set(picked[1][0].points))
     w = TrackerWorker.__new__(TrackerWorker)
-    w._layers = []
-    w._load_layers = TrackerWorker._load_layers.__get__(w)
+    w._layers, w._hoard, w._hoard_cache = [], None, (None, None)
     w.cfg = {"layers": []}
     w._load_layers("riparia")
     w.set_active(t.labeled_objectives)
     lay = w._shown_layers()
-    check("Hoard: every item of its list is shown", len(lay) == 1 and len(lay[0].points) > 1000
-          and any(it[2] == HOARD_KEY for it in t.labeled_objectives), str([len(l.points) for l in lay]))
+    check("Hoard: Scavenger: every item of its list is shown", len(lay) == 1 and len(lay[0].points) > 1000
+          and lay[0].kind.label == "Hoard: Scavenger items", str([(l.kind.label, len(l.points)) for l in lay]))
     w.set_active([it for it in t.labeled_objectives if it[2] != HOARD_KEY])
     check("Hoard over: its items go", w._shown_layers() == [])
+
+    # Other Hoard events (real reads): their own items, not the Scavenger list.
+    from potoverlay.layers import _map_data
+    names = {m["id"]: m["name"] for m in _map_data("riparia")["markers"]}
+    gem = ["Quests", "Hoard;Gemstones", "—.Collect as much as you can", "7:38",
+           "Citrifie'Quartz, Opal Chunk, Amber,", "BloodstonesoRearl, Emerald, Obsidian Chunk", "Volcano Islands",
+           "Time Left: 29:55e", "Find Location: Volcano Islands", "Sticky Tar", "- Collect 25 sticky Tar 18/25"]
+    g = ActiveQuestTracker(db)
+    g.update(gem)
+    w.set_active(g.labeled_objectives)
+    lay = w._shown_layers()
+    gem_kinds = {"quartz", "opal", "amber", "blood_stone", "pearl", "emerald", "obsidian"}
+    from potoverlay.layers import load_layers  # noqa: F401
+    import numpy as np
+    raw = {m["id"]: np.asarray(m["points"]).reshape(-1, 2) * 4096 / 500 for m in _map_data("riparia")["markers"]
+           if m.get("points")}
+    expect = sum(len(raw[k]) for k in gem_kinds if k in raw)
+    check("Hoard: Gemstones (garbled title) shows the 7 gemstones, nothing else",
+          len(lay) == 1 and lay[0].kind.label == "Hoard: Gemstones items" and len(lay[0].points) == expect,
+          f"{[(l.kind.label, len(l.points)) for l in lay]}, expected {expect}")
+    labs = [lab for _, lab, _ in g.labeled_objectives]
+    check("'Collect as much as you can' and the item list aren't read as quests",
+          not any("collect" in x.lower() or "quartz" in x.lower() or "amber" in x.lower() for x in labs), str(labs))
+    from potoverlay.layers import hoard_kinds
+    beach = hoard_kinds(_map_data("riparia")["markers"], ["Starfish", "Fish Bones", "Wind Blown Branches", "Clam"])
+    check("names match exactly-ish: Starfish/Fish Bones/Wind Blown Branches aren't Glow Starfish/Bones/Branches",
+          beach == ["starfish", "fish_bones", "wind_blown_branches", "clams"], str([names.get(k) for k in beach]))
+    odd = ["Quests", "Hoard: Lumberjack", "Collect as much as you can", "Branches, Wind Blown Branches,",
+           "Peeling Bark, Charred Wood"]
+    o = ActiveQuestTracker(db)
+    o.update(odd)
+    w.set_active(o.labeled_objectives)
+    lay = w._shown_layers()
+    check("a Hoard type we don't know: its items are read off the HUD",
+          len(lay) == 1 and lay[0].kind.label == "Hoard: Lumberjack items", str([l.kind.label for l in lay]))
     check("'Scavenge from the Dead' is a normal quest, not the Hoard",
           not any(it[2] == HOARD_KEY for it in _tracked(db, ["Quests", "Scavenge from the Dead",
                                                               "- Collect 10 Bones 0/10"])))

@@ -29,7 +29,8 @@ from .capture import ScreenGrabber  # noqa: E402
 from .locator import Fix, MapLocator, build_minimap_mask  # noqa: E402
 from .mapdetect import MultiMapTracker  # noqa: E402
 from .mapview import MapScreenDetector, MapWindowProbe, layout_view_layer, layout_view_markers  # noqa: E402
-from .layers import FOOD_GROUPS, available_kinds, hoard_layer, layer_legend, load_layers  # noqa: E402
+from .layers import (FOOD_GROUPS, HOARD_LISTS, available_kinds, hoard_layer, hoard_type,  # noqa: E402
+                     layer_legend, load_layers)
 from .markers import OverlayState, assign_colors, layout_layer, layout_markers  # noqa: E402
 from .overlay import MapScreenOverlay, Overlay  # noqa: E402
 from .quests import HOARD_KEY, ActiveQuestTracker, Quest, QuestDB, objective_id  # noqa: E402
@@ -67,8 +68,11 @@ class TrackerWorker(QThread):
         self.db = db
         self.active: list = []  # (candidate quest keys, title shown in game) per objective
         self._layers: list = []  # always-on map layers (fish spawns...), loaded per map in run()
-        self._hoard_layer = None  # every Hoard: Scavenger item on this map, shown during the event
-        self._hoard = False
+        # The Hoard event in the quest list, if any: (label, item names read), e.g. ("Hoard: Gemstones",
+        # {...}); its layer (every spawn of its items on this map) is built when needed, then cached.
+        self._hoard: tuple | None = None
+        self._hoard_cache: tuple = (None, None)  # (key, layer)
+        self._layers_map = ""
         self.show_all = bool(cfg["show_all_quests"])
         self._stop = False
         self._lock = threading.Lock()
@@ -85,7 +89,9 @@ class TrackerWorker(QThread):
     def set_active(self, active: list) -> None:
         """(candidate quest keys, title, objective) triples, pairs, or plain candidate sets."""
         self.active = list(active)
-        self._hoard = any(isinstance(it, tuple) and len(it) > 2 and it[2] == HOARD_KEY for it in self.active)
+        hoard = next((it for it in self.active if isinstance(it, tuple) and len(it) > 2 and it[2] == HOARD_KEY), None)
+        # (Hoard entries carry the item names read from the HUD where quests carry candidates.)
+        self._hoard = (hoard[1], frozenset(hoard[0])) if hoard else None
 
     def _leave_map_screen(self) -> None:
         self.view_ready.emit(OverlayState(False))
@@ -93,7 +99,7 @@ class TrackerWorker(QThread):
 
     def _load_layers(self, map_name: str) -> None:
         self._layers = load_layers(map_name, list(self.cfg.get("layers") or []))
-        self._hoard_layer = hoard_layer(map_name)
+        self._layers_map = map_name
         self._fresh = None
         if self.cfg.get("fresh_water"):
             try:  # baked data: data/freshwater/<map>.json
@@ -102,9 +108,17 @@ class TrackerWorker(QThread):
                 log.exception("Could not work out fresh water for %s", map_name)
 
     def _shown_layers(self) -> list:
-        """Food layers, plus every Hoard item while the Hoard: Scavenger event is in the quest list."""
-        hoard = getattr(self, "_hoard_layer", None)
-        return self._layers + ([hoard] if getattr(self, "_hoard", False) and hoard is not None else [])
+        """Food layers, plus every item of the Hoard event (Gemstones, Beachcomber...) in the quest list."""
+        hoard = getattr(self, "_hoard", None)
+        if not hoard:
+            return self._layers
+        label, items = hoard
+        # Known Hoard types have a fixed list: a new item misread doesn't need a rebuild.
+        key = (self._layers_map, label, None if hoard_type(label) in HOARD_LISTS else items)
+        if self._hoard_cache[0] != key:
+            self._hoard_cache = (key, hoard_layer(self._layers_map, label, items))
+        layer = self._hoard_cache[1]
+        return self._layers + ([layer] if layer is not None else [])
 
     def _zones(self, to_screen, x0: float, y0: float, x1: float, y1: float) -> list:
         fresh = getattr(self, "_fresh", None)
@@ -346,6 +360,8 @@ def pick_labeled(active: list, index: dict[str, Quest], player) -> list[tuple[Qu
             group, label, key = (tuple(item) + (None,))[:3]
         else:
             group, label, key = item, None, None
+        if key == HOARD_KEY:  # the Hoard event: shown as a layer of its items, not a quest
+            continue
         cands = [index[k] for k in group if k in index]
         if not cands:
             continue
