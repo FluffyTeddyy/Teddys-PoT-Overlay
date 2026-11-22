@@ -20,11 +20,10 @@ import numpy as np
 
 from potoverlay import config as C
 from potoverlay.quests import Quest, QuestDB
+from potoverlay.spawnfix import to_image
 
 RAW = C.DATA_DIR / "potservers"
 ATTRIBUTION = "Data from Potservers (https://potservers.net). Unofficial; Path of Titans belongs to Alderon Games."
-GRID = 500.0          # Potservers map coordinates run 0..500
-IMAGE_SIZE = 4096     # we download the 4096 px image
 NEAR_POI = 6.0        # grid units outside the POI outline that still count as "in" it
 FALLBACK_NEAREST = 25 # if no spawns in the POI, use this many nearest to it
 
@@ -39,8 +38,10 @@ TYPE_COLORS = {
 }
 
 
-def px(pt) -> tuple[float, float]:
-    return (round(float(pt[0]) * IMAGE_SIZE / GRID, 1), round(float(pt[1]) * IMAGE_SIZE / GRID, 1))
+def px(map_name: str, pt) -> tuple[float, float]:
+    """Potservers grid point -> image pixels (with the map's correction, see potoverlay/spawnfix.py)."""
+    x, y = to_image(map_name, [float(pt[0]), float(pt[1])])[0]
+    return (round(float(x), 1), round(float(y), 1))
 
 
 def _norm(s: str) -> str:
@@ -49,7 +50,8 @@ def _norm(s: str) -> str:
 
 
 class MapData:
-    def __init__(self, raw: dict):
+    def __init__(self, raw: dict, map_name: str = ""):
+        self.map = map_name
         self.kinds = {m["id"]: np.float32(m["points"]).reshape(-1, 2) for m in raw["markers"]}
         self.kind_by_name: dict[str, str] = {}
         for m in raw["markers"]:
@@ -110,25 +112,25 @@ def convert(q: dict, md: MapData) -> Quest | None:
             if obj:
                 objectives.append(obj)
             if ttype in ("gather", "deliver", "waystone_cooldown"):
-                mine = [px(p) for k in md.kinds_for_item(it) for p in md.points_near_region(k, region_id)]
+                mine = [px(md.map, p) for k in md.kinds_for_item(it) for p in md.points_near_region(k, region_id)]
                 points.extend(mine)
                 if obj and mine:
                     per_objective.setdefault(obj, []).extend(mine)
         if ttype == "waystone_cooldown":
-            targets.extend(px(p) for p in md.nearest_in_region("waystone", region_id))
+            targets.extend(px(md.map, p) for p in md.nearest_in_region("waystone", region_id))
         elif ttype == "deliver":
-            targets.extend(px(p) for p in md.nearest_in_region("delivery", region_id))
+            targets.extend(px(md.map, p) for p in md.nearest_in_region("delivery", region_id))
         elif ttype in ("explore", "water_restore", "move_to", "group_meet"):
             for it in items:
                 if it.get("id") in md.landmarks:
-                    targets.append(px(md.landmarks[it["id"]]))
+                    targets.append(px(md.map, md.landmarks[it["id"]]))
                 elif it.get("id") in md.regions:
-                    targets.append(px(md.regions[it["id"]][1]))
+                    targets.append(px(md.map, md.regions[it["id"]][1]))
             if not targets and region_id in md.regions:
-                targets.append(px(md.regions[region_id][1]))
+                targets.append(px(md.map, md.regions[region_id][1]))
     if not points and not targets:
         return None  # e.g. fishing quests: no fixed location
-    center = px(md.regions[region_id][1]) if region_id in md.regions else (targets or points)[0]
+    center = px(md.map, md.regions[region_id][1]) if region_id in md.regions else (targets or points)[0]
     return Quest(
         name=q["name"], points=sorted(set(points)), color=TYPE_COLORS.get(q.get("type"), ""),
         id=q["id"], poi=poi, type=q.get("type") or "", objectives=list(dict.fromkeys(objectives)),
@@ -142,7 +144,7 @@ def build_map(map_name: str) -> int:
     if not map_path.exists():
         print(f"[{map_name}] not downloaded, skipping")
         return 0
-    md = MapData(json.loads(map_path.read_text(encoding="utf-8"))["data"])
+    md = MapData(json.loads(map_path.read_text(encoding="utf-8"))["data"], map_name)
     built: dict[tuple, Quest] = {}
     skipped = defaultdict(int)
     # Only quests in Potservers' current list: a quest removed by a game patch may still have an

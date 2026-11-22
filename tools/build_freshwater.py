@@ -21,6 +21,7 @@ import numpy as np
 
 from potoverlay import config as C
 from potoverlay import freshwater as F
+from potoverlay import spawnfix
 from potoverlay.locator import imread_any
 
 RAW = C.DATA_DIR / "vulnona"
@@ -211,6 +212,9 @@ def build(map_name: str) -> dict:
         mask |= cv2.resize(work_mask, (RES, RES), interpolation=cv2.INTER_NEAREST)
 
     zones = F.outlines(mask, full, eps=0.8)
+    if drawn:  # VulnonaMAP shapes were fitted to Potservers' waystones: same correction as spawns
+        zones = [spawnfix.correct(map_name, z).tolist() for z in zones]
+    # (Riparia's outlines come from the map image itself, which is already the overlay's frame.)
     px = full[0] / F.GRID
     return {
         "map": map_name,

@@ -13,6 +13,7 @@ data/vulnona/
 config.json
 data/quest_log.txt
 data/fish_buffs.json
+data/reports/
 data/calibration.png
 data/locator_debug.png
 data/preview.png

@@ -341,6 +341,23 @@ def test_fresh_water() -> None:
     check("panned: repaints", len(updates) > n0)
 
 
+def test_spawn_fix() -> None:
+    print("spawn positions corrected per map (F10 reports)")
+    from potoverlay.spawnfix import to_image
+    corner = to_image("riparia", [[10, 490]])[0]  # SW corner: pulled in towards the middle
+    plain = np.array([10, 490]) * 4096 / 500
+    check("Riparia's corner spawns move inwards ~20-35 m", corner[0] > plain[0] + 15 and corner[1] < plain[1] - 15,
+          f"{plain} -> {corner.round(1)}")
+    mid = to_image("riparia", [[2185 * 500 / 4096, 1782 * 500 / 4096]])[0]
+    check("no change at the correction's centre", np.allclose(mid, [2185, 1782]), str(mid))
+    other = to_image("gondwa", [[10, 490]])[0]
+    check("maps without a measured correction keep the plain conversion", np.allclose(other, plain), str(other))
+    berry = next(m for m in json.loads((C.DATA_DIR / "potservers" / "map_riparia.json").read_text(encoding="utf-8"))
+                 ["data"]["markers"] if m["id"] == "berry")["points"]
+    lay = load_layers("riparia", ["berry"])
+    check("food layers use the corrected positions", lay and np.allclose(lay[0].points, to_image("riparia", berry)))
+
+
 def _tracked(db, lines):
     from potoverlay.quests import ActiveQuestTracker
     t = ActiveQuestTracker(db)
@@ -356,5 +373,6 @@ if __name__ == "__main__":
     test_fish_buff_file()
     test_hud_objectives_and_hoard()
     test_fresh_water()
+    test_spawn_fix()
     print("\nALL PASSED" if failures == 0 else f"\n{failures} FAILED")
     sys.exit(1 if failures else 0)

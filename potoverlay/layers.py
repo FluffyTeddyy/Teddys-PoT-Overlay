@@ -12,11 +12,9 @@ from dataclasses import dataclass
 import numpy as np
 
 from . import config as C
+from .spawnfix import to_image
 
 log = logging.getLogger(__name__)
-
-GRID = 500.0       # Potservers map coordinates run 0..500
-IMAGE_SIZE = 4096  # the map images are 4096 px
 
 
 @dataclass(frozen=True)
@@ -143,7 +141,7 @@ def load_layers(map_name: str, kinds: list[str]) -> list[Layer]:
     out = []
     for m in data.get("markers", []):
         if m["id"] in kinds and m["id"] in BY_ID and m.get("points"):
-            pts = np.asarray(m["points"], np.float64).reshape(-1, 2) * (IMAGE_SIZE / GRID)
+            pts = to_image(map_name, m["points"])
             out.append(Layer(BY_ID[m["id"]], pts))
     return out
 
@@ -166,7 +164,7 @@ def hoard_layer(map_name: str, label: str, items_read=()) -> Layer | None:
     if not pts:
         return None
     kind = LayerKind("hoard", f"{label} items" if label else "Hoard items", HOARD_COLOR, "dot", "Hoard")
-    return Layer(kind, np.vstack(pts) * (IMAGE_SIZE / GRID))
+    return Layer(kind, to_image(map_name, np.vstack(pts)))
 
 
 def _map_data(map_name: str) -> dict | None:
