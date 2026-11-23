@@ -56,6 +56,12 @@ DEFAULTS: dict = {
     # --- In-game map screen ---
     # When the big map is open, put the quest markers on it too.
     "map_screen_mode": True,
+    # On the big map, every spawn of the items your quests still need, all over the map (tray
+    # toggle). Off: the quest area's spawns plus those near you, the same as on the minimap.
+    "map_all_item_spawns": False,
+    # Hide quest and Hoard items too deep to reach without diving, for dinosaurs that can't dive
+    # (tray toggle). Underwater spawns are baked into data/underwater/ by tools/build_underwater.py.
+    "hide_underwater": False,
     # Seconds without a minimap match before checking whether the map screen is open.
     "map_screen_after_s": 0.3,
     # Also check for the map screen this often while the minimap is tracking (the minimap can still

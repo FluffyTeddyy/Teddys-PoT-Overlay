@@ -437,6 +437,53 @@ def test_quest_places() -> None:
     gaps = np.hypot(*(stars[:, None] - stars[None]).transpose(2, 0, 1)) + np.eye(len(stars)) * 1e9
     check("...once each", len(stars) and gaps.min() >= 1.0)
 
+    # Big map toggle (default off): every spawn of the needed item, anywhere on the map.
+    from potoverlay import config as Cfg
+    from potoverlay.app import TrackerWorker
+    check("big map: all spawns is off by default", Cfg.DEFAULTS.get("map_all_item_spawns") is False)
+    w = TrackerWorker.__new__(TrackerWorker)
+    w._spawns, w._near_radius = spawns, reach
+    near_only = {n: len(q.points) for q, n in pick_labeled(act, db.by_key(), me, w._near(me))}
+    everywhere = {n: q for q, n in pick_labeled(act, db.by_key(), me, w._near(me, True))}
+    check("...and when on, every starfish on the map is shown", len(everywhere["Starfish"].points) >= len(star)
+          and len(everywhere["Starfish"].points) > near_only["Starfish"],
+          f"{near_only['Starfish']} near -> {len(everywhere['Starfish'].points)} of {len(star)}")
+
+
+def test_underwater() -> None:
+    print("hide underwater items (can't dive)")
+    from potoverlay import underwater
+    from potoverlay.app import TrackerWorker, pick_labeled
+    from potoverlay.layers import spawn_index
+    from potoverlay.quests import QuestDB
+
+    spawns = spawn_index("gondwa")
+    uw = underwater.load("gondwa")
+    share = {k: float(uw.mask(spawns[k]).mean()) for k in ("sea_anemone", "starfish", "lake_weed", "berry", "roots")}
+    check("seabed items are underwater (anemones, starfish), floating and land ones aren't",
+          share["sea_anemone"] > 0.8 and share["starfish"] > 0.8 and share["lake_weed"] < 0.05
+          and share["berry"] == 0 and share["roots"] < 0.01, str({k: round(v, 2) for k, v in share.items()}))
+
+    db = QuestDB.load(C.quest_file("riparia"), "riparia")
+    lines = ["Quests", "Gifts from the Sea", "- Collect 15 Conch 0/15", "- Collect 15 Starfish 0/15",
+             "- Collect 15 Anemone 0/15"]
+    act = _tracked(db, lines)
+    act = _tracked(db, lines)
+    here = (2700.0, 600.0)  # Kelp Vale
+    shown = pick_labeled(act, db.by_key(), here)
+    w = TrackerWorker.__new__(TrackerWorker)
+    w._underwater = underwater.load("riparia")
+    w.cfg = {"hide_underwater": False}
+    same = w._dry(shown)
+    w.cfg = {"hide_underwater": True}
+    dry = {n: len(q.points) for q, n in w._dry(shown)}
+    full = {n: len(q.points) for q, n in shown}
+    check("off (default): nothing hidden", [len(q.points) for q, _ in same] == [len(q.points) for q, _ in shown]
+          and C.DEFAULTS.get("hide_underwater") is False)
+    check("on: Gifts from the Sea loses its deep anemones and starfish",
+          dry.get("Anemone", 0) < full.get("Anemone", 0) and dry.get("Starfish", 0) < full.get("Starfish", 0),
+          f"{full} -> {dry}")
+
 
 def _tracked(db, lines):
     from potoverlay.quests import ActiveQuestTracker
@@ -456,5 +503,6 @@ if __name__ == "__main__":
     test_item_colors()
     test_spawn_fix()
     test_quest_places()
+    test_underwater()
     print("\nALL PASSED" if failures == 0 else f"\n{failures} FAILED")
     sys.exit(1 if failures else 0)

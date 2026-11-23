@@ -25,12 +25,13 @@ from PySide6.QtWidgets import QApplication, QMenu, QMessageBox, QSystemTrayIcon 
 
 from . import config as C  # noqa: E402
 from . import fishbuffs, freshwater, gamelaunch  # noqa: E402
+from . import underwater  # noqa: E402
 from .capture import ScreenGrabber  # noqa: E402
 from .locator import Fix, MapLocator, build_minimap_mask  # noqa: E402
 from .mapdetect import MultiMapTracker  # noqa: E402
 from .mapview import MapScreenDetector, MapWindowProbe, layout_view_layer, layout_view_markers  # noqa: E402
 from .layers import (FOOD_GROUPS, HOARD_LISTS, available_kinds, hoard_layer, hoard_type,  # noqa: E402
-                     layer_legend, load_layers, spawn_index)
+                     Layer, layer_legend, load_layers, spawn_index)
 from .markers import OverlayState, assign_colors, item_color, layout_layer, layout_markers  # noqa: E402
 from .overlay import MapScreenOverlay, Overlay  # noqa: E402
 from .quests import HOARD_KEY, ActiveQuestTracker, Quest, QuestDB, objective_id  # noqa: E402
@@ -75,6 +76,7 @@ class TrackerWorker(QThread):
         # Every spawn on the map by kind: active quests' items near you are shown wherever they are.
         self._spawns: dict = {}
         self._near_radius = 400.0  # map px the minimap shows around you (updated every frame)
+        self._underwater = None  # spawns too deep to reach without diving, for this map
         self._layers_map = ""
         self.show_all = bool(cfg["show_all_quests"])
         self._stop = False
@@ -103,6 +105,7 @@ class TrackerWorker(QThread):
     def _load_layers(self, map_name: str) -> None:
         self._layers = load_layers(map_name, list(self.cfg.get("layers") or []))
         self._spawns = spawn_index(map_name)
+        self._underwater = underwater.load(map_name)
         self._layers_map = map_name
         self._fresh = None
         if self.cfg.get("fresh_water"):
@@ -118,15 +121,20 @@ class TrackerWorker(QThread):
             return self._layers
         label, items = hoard
         # Known Hoard types have a fixed list: a new item misread doesn't need a rebuild.
-        key = (self._layers_map, label, None if hoard_type(label) in HOARD_LISTS else items)
+        uw = getattr(self, "_underwater", None) if self.cfg.get("hide_underwater") else None
+        key = (self._layers_map, label, None if hoard_type(label) in HOARD_LISTS else items, uw is not None)
         if self._hoard_cache[0] != key:
-            self._hoard_cache = (key, hoard_layer(self._layers_map, label, items))
+            layer = hoard_layer(self._layers_map, label, items)
+            if layer is not None and uw is not None and len(uw):  # can't dive: not the deep ones
+                layer = Layer(layer.kind, layer.points[~uw.mask(layer.points)])
+            self._hoard_cache = (key, layer)
         layer = self._hoard_cache[1]
         return self._layers + ([layer] if layer is not None else [])
 
-    def _near(self, player):
-        """For pick_labeled: every spawn of the given kinds within minimap reach of the player."""
-        spawns, r = self._spawns, self._near_radius
+    def _near(self, player, everywhere: bool = False):
+        """For pick_labeled: every spawn of the given kinds within minimap reach of the player
+        (`everywhere`: on the whole map)."""
+        spawns, r = self._spawns, (math.inf if everywhere else self._near_radius)
         px, py = float(player[0]), float(player[1])
 
         def near(kinds) -> list:
@@ -138,6 +146,13 @@ class TrackerWorker(QThread):
                     out += [(float(x), float(y)) for x, y in sel]
             return out
         return near
+
+    def _dry(self, shown: list) -> list:
+        """Quest markers without the spawns too deep to reach, if your dinosaur can't dive (tray)."""
+        uw = getattr(self, "_underwater", None)
+        if not self.cfg.get("hide_underwater") or not uw:
+            return shown
+        return [(replace(q, points=uw.dry(q.points)), name) for q, name in shown]
 
     def _zones(self, to_screen, x0: float, y0: float, x1: float, y1: float) -> list:
         fresh = getattr(self, "_fresh", None)
@@ -156,7 +171,9 @@ class TrackerWorker(QThread):
         if self.show_all:
             shown = [(q, q.name) for q in db.quests if q.points or q.targets]
         else:
-            shown = pick_labeled(self.active, index, player, self._near(player))
+            everywhere = bool(self.cfg.get("map_all_item_spawns"))
+            shown = pick_labeled(self.active, index, player, self._near(player, everywhere))
+        shown = self._dry(shown)
         colors = {} if self.show_all else assign_colors([name for _, name in shown], item_colors(shown))
         items = [(name, colors.get(name) or q.color or self.cfg["default_marker_color"], q.points, q.targets)
                  for q, name in shown]
@@ -294,6 +311,7 @@ class TrackerWorker(QThread):
                     shown = [(q, q.name) for q in db.quests if q.points or q.targets]
                 else:
                     shown = pick_labeled(self.active, index, player, self._near(player))
+                shown = self._dry(shown)
                 colors = {} if self.show_all else assign_colors([name for _, name in shown], item_colors(shown))
                 items = [
                     (name, colors.get(name) or q.color or cfg["default_marker_color"],
@@ -878,6 +896,16 @@ class App:
         a.toggled.connect(self.set_map_screen_mode)
         menu.addAction(a)
 
+        a = QAction("In-game map: every spawn of items I still need", menu, checkable=True)
+        a.setChecked(bool(self.cfg.get("map_all_item_spawns")))
+        a.toggled.connect(self.set_map_all_item_spawns)
+        menu.addAction(a)
+
+        a = QAction("Hide underwater items (my dinosaur can't dive)", menu, checkable=True)
+        a.setChecked(bool(self.cfg.get("hide_underwater")))
+        a.toggled.connect(self.set_hide_underwater)
+        menu.addAction(a)
+
         a = QAction("Show all quests (ignore quest panel)", menu, checkable=True)
         a.setChecked(bool(self.cfg["show_all_quests"]))
         a.toggled.connect(self.set_show_all)
@@ -997,6 +1025,16 @@ class App:
         self.overlay.update()
         self.map_overlay.user_hidden = not on
         self.map_overlay.set_state(self.map_overlay.state)
+
+    def set_hide_underwater(self, on: bool) -> None:
+        """Tray: hide quest and Hoard items too deep to reach without diving."""
+        self.cfg["hide_underwater"] = bool(on)  # the tracker reads this live
+        self._save_cfg_key("hide_underwater", bool(on))
+
+    def set_map_all_item_spawns(self, on: bool) -> None:
+        """Tray: on the big map, every spawn of the items still needed, not just nearby ones."""
+        self.cfg["map_all_item_spawns"] = bool(on)  # the tracker reads this live
+        self._save_cfg_key("map_all_item_spawns", bool(on))
 
     def set_map_screen_mode(self, on: bool) -> None:
         self._save_cfg_key("map_screen_mode", on)
