@@ -314,7 +314,12 @@
     1930.0,
     753.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 15 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Gather Clams",
@@ -372,7 +377,12 @@
     1930.0,
     753.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Clam": [
+     "clams"
+    ]
+   }
   },
   {
    "name": "Grassy Field Forager",
@@ -964,6 +974,15 @@
       1984.3,
       849.6
      ]
+    ]
+   },
+   "objective_kinds": {
+    "Collect 100 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ],
+    "Collect 120 Button Mushroom": [
+     "button"
     ]
    }
   },
@@ -1558,6 +1577,15 @@
       849.6
      ]
     ]
+   },
+   "objective_kinds": {
+    "Collect 25 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ],
+    "Collect 35 Button Mushroom": [
+     "button"
+    ]
    }
   },
   {
@@ -1676,7 +1704,12 @@
     1930.0,
     753.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 20 Lake Sponge": [
+     "lake_sponge"
+    ]
+   }
   },
   {
    "name": "Aperture Pass",
@@ -1974,7 +2007,12 @@
     3560.2,
     2941.3
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Acorns": [
+     "acorn"
+    ]
+   }
   },
   {
    "name": "Gather Lychees",
@@ -2388,7 +2426,12 @@
     3560.2,
     2941.3
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 200 Lychees": [
+     "lychee"
+    ]
+   }
   },
   {
    "name": "Lake Sponge",
@@ -2714,7 +2757,12 @@
     3560.2,
     2941.3
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Lake Sponge": [
+     "lake_sponge"
+    ]
+   }
   },
   {
    "name": "Lake Sponge",
@@ -3040,7 +3088,12 @@
     3560.2,
     2941.3
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 20 Lake Sponge": [
+     "lake_sponge"
+    ]
+   }
   },
   {
    "name": "Beech Hill Haven",
@@ -4378,7 +4431,12 @@
     3422.0,
     1029.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 30 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Clear Lakeweed",
@@ -5676,7 +5734,12 @@
     3422.0,
     1029.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 15 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Gather Button Mushrooms",
@@ -5742,7 +5805,12 @@
     3422.0,
     1029.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 120 Button Mushroom": [
+     "button"
+    ]
+   }
   },
   {
    "name": "Gather Button Mushrooms",
@@ -5808,7 +5876,12 @@
     3422.0,
     1029.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 35 Button Mushroom": [
+     "button"
+    ]
+   }
   },
   {
    "name": "Gather Clams",
@@ -5882,7 +5955,12 @@
     3422.0,
     1029.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 75 Clam": [
+     "clams"
+    ]
+   }
   },
   {
    "name": "Gather Clams",
@@ -5956,7 +6034,12 @@
     3422.0,
     1029.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Clam": [
+     "clams"
+    ]
+   }
   },
   {
    "name": "Lake Sponge",
@@ -6202,7 +6285,12 @@
     3422.0,
     1029.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Lake Sponge": [
+     "lake_sponge"
+    ]
+   }
   },
   {
    "name": "Lake Sponge",
@@ -6448,7 +6536,12 @@
     3422.0,
     1029.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 20 Lake Sponge": [
+     "lake_sponge"
+    ]
+   }
   },
   {
    "name": "Blackwater Bayou",
@@ -6726,7 +6819,7 @@
      2336.3
     ],
     [
-     3499.9,
+     3500.0,
      2330.8
     ],
     [
@@ -6758,12 +6851,12 @@
      2327.2
     ],
     [
-     3514.4,
-     2345.9
+     3514.5,
+     2335.9
     ],
     [
      3514.5,
-     2335.9
+     2345.9
     ],
     [
      3525.6,
@@ -6982,7 +7075,12 @@
     3477.1,
     2396.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 150 Acorns": [
+     "acorn"
+    ]
+   }
   },
   {
    "name": "Gather Acorns",
@@ -7240,7 +7338,7 @@
      2336.3
     ],
     [
-     3499.9,
+     3500.0,
      2330.8
     ],
     [
@@ -7272,12 +7370,12 @@
      2327.2
     ],
     [
-     3514.4,
-     2345.9
+     3514.5,
+     2335.9
     ],
     [
      3514.5,
-     2335.9
+     2345.9
     ],
     [
      3525.6,
@@ -7496,7 +7594,12 @@
     3477.1,
     2396.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Acorns": [
+     "acorn"
+    ]
+   }
   },
   {
    "name": "Lake Sponge",
@@ -7846,7 +7949,12 @@
     3477.1,
     2396.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Lake Sponge": [
+     "lake_sponge"
+    ]
+   }
   },
   {
    "name": "Lake Sponge",
@@ -8196,7 +8304,12 @@
     3477.1,
     2396.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 20 Lake Sponge": [
+     "lake_sponge"
+    ]
+   }
   },
   {
    "name": "Bower Brook Lake",
@@ -8358,7 +8471,12 @@
     1018.2,
     557.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 30 Branch": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Clear Branches",
@@ -8500,7 +8618,12 @@
     1018.2,
     557.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 150 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Clear Lakeweed",
@@ -8614,7 +8737,12 @@
     1018.2,
     557.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 30 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Clear Lakeweed",
@@ -8728,7 +8856,12 @@
     1018.2,
     557.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 15 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Gather Acorns",
@@ -8998,7 +9131,12 @@
     1018.2,
     557.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Acorns": [
+     "acorn"
+    ]
+   }
   },
   {
    "name": "Lake Sponge",
@@ -9156,7 +9294,12 @@
     1018.2,
     557.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Lake Sponge": [
+     "lake_sponge"
+    ]
+   }
   },
   {
    "name": "Lake Sponge",
@@ -9314,7 +9457,12 @@
     1018.2,
     557.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 20 Lake Sponge": [
+     "lake_sponge"
+    ]
+   }
   },
   {
    "name": "Central Waystone",
@@ -9370,7 +9518,12 @@
     2107.0,
     2066.4
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Restore Waystone at Central Waystone by Delivering Glow Mushrooms": [
+     "glow_mushroom"
+    ]
+   }
   },
   {
    "name": "Cliffside Haven",
@@ -9570,7 +9723,12 @@
     1444.4,
     2636.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 10 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Fix Dam",
@@ -9730,7 +9888,12 @@
     1444.4,
     2636.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 4 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Gather Roots",
@@ -10120,7 +10283,12 @@
     1444.4,
     2636.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 150 Roots": [
+     "roots"
+    ]
+   }
   },
   {
    "name": "Clear Branches",
@@ -10356,7 +10524,12 @@
     1481.5,
     1540.3
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 4 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Clear Branches",
@@ -10592,7 +10765,12 @@
     1481.5,
     1540.3
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 1 Branch": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Cliffside Retreat",
@@ -11246,7 +11424,12 @@
     1481.5,
     1540.3
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 150 Acorns": [
+     "acorn"
+    ]
+   }
   },
   {
    "name": "Gather Acorns",
@@ -11880,7 +12063,12 @@
     1481.5,
     1540.3
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Acorns": [
+     "acorn"
+    ]
+   }
   },
   {
    "name": "Gather Flowers",
@@ -12202,7 +12390,13 @@
     1481.5,
     1540.3
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "Grassy Field Forager",
@@ -12524,7 +12718,13 @@
     1481.5,
     1540.3
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 100 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "Clubtail Canyon",
@@ -12750,7 +12950,7 @@
      606.9
     ],
     [
-     2219.9,
+     2220.0,
      655.4
     ],
     [
@@ -12874,7 +13074,12 @@
     2148.4,
     555.4
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 200 Lychees": [
+     "lychee"
+    ]
+   }
   },
   {
    "name": "Gather Lychees",
@@ -13080,7 +13285,7 @@
      606.9
     ],
     [
-     2219.9,
+     2220.0,
      655.4
     ],
     [
@@ -13204,7 +13409,12 @@
     2148.4,
     555.4
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Lychees": [
+     "lychee"
+    ]
+   }
   },
   {
    "name": "Corpse Cove",
@@ -13294,7 +13504,12 @@
     2290.0,
     1906.8
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Bones": [
+     "bones"
+    ]
+   }
   },
   {
    "name": "Scavenge from the Dead",
@@ -13364,7 +13579,12 @@
     2290.0,
     1906.8
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 20 Bones": [
+     "bones"
+    ]
+   }
   },
   {
    "name": "Branches In High Places",
@@ -13440,7 +13660,12 @@
     767.6,
     3266.5
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 4 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Branches In High Places",
@@ -13516,7 +13741,12 @@
     767.6,
     3266.5
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 1 Branch": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Crater Pond",
@@ -14153,6 +14383,14 @@
       3284.9
      ]
     ]
+   },
+   "objective_kinds": {
+    "Collect 150 Acorns": [
+     "acorn"
+    ],
+    "Collect 125 Pinecone": [
+     "pinecone"
+    ]
    }
   },
   {
@@ -14770,6 +15008,14 @@
       3284.9
      ]
     ]
+   },
+   "objective_kinds": {
+    "Collect 50 Acorns": [
+     "acorn"
+    ],
+    "Collect 50 Pinecone": [
+     "pinecone"
+    ]
    }
   },
   {
@@ -14984,7 +15230,12 @@
     3206.2,
     643.8
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 100 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Clear Branches",
@@ -15198,7 +15449,12 @@
     3206.2,
     643.8
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Crawdad Creek",
@@ -15648,7 +15904,12 @@
     3206.2,
     643.8
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 150 Acorns": [
+     "acorn"
+    ]
+   }
   },
   {
    "name": "Gather Acorns",
@@ -16078,7 +16339,12 @@
     3206.2,
     643.8
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Acorns": [
+     "acorn"
+    ]
+   }
   },
   {
    "name": "Dark Falls",
@@ -16292,7 +16558,12 @@
     2422.9,
     2836.6
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 75 Clam": [
+     "clams"
+    ]
+   }
   },
   {
    "name": "Gather Clams",
@@ -16446,7 +16717,12 @@
     2422.9,
     2836.6
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Clam": [
+     "clams"
+    ]
+   }
   },
   {
    "name": "Gather Lychees",
@@ -16884,7 +17160,12 @@
     2422.9,
     2836.6
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 200 Lychees": [
+     "lychee"
+    ]
+   }
   },
   {
    "name": "Gather Lychees",
@@ -17322,7 +17603,12 @@
     2422.9,
     2836.6
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Lychees": [
+     "lychee"
+    ]
+   }
   },
   {
    "name": "Dropoff Lake",
@@ -17470,7 +17756,12 @@
     668.2,
     2743.3
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 10 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Fix Dam",
@@ -17598,7 +17889,12 @@
     668.2,
     2743.3
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 3 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Gather Roots",
@@ -18758,6 +19054,14 @@
       765.9,
       2693.4
      ]
+    ]
+   },
+   "objective_kinds": {
+    "Collect 150 Roots": [
+     "roots"
+    ],
+    "Collect 125 Pinecone": [
+     "pinecone"
     ]
    }
   },
@@ -19920,6 +20224,14 @@
       2693.4
      ]
     ]
+   },
+   "objective_kinds": {
+    "Collect 25 Roots": [
+     "roots"
+    ],
+    "Collect 50 Pinecone": [
+     "pinecone"
+    ]
    }
   },
   {
@@ -20182,7 +20494,12 @@
     3640.0,
     1878.4
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 200 Lychees": [
+     "lychee"
+    ]
+   }
   },
   {
    "name": "Gather Lychees",
@@ -20424,7 +20741,12 @@
     3640.0,
     1878.4
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Lychees": [
+     "lychee"
+    ]
+   }
   },
   {
    "name": "Mineral Excavation",
@@ -20498,7 +20820,12 @@
     3640.0,
     1878.4
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 100 Salt Rock": [
+     "salt_rock"
+    ]
+   }
   },
   {
    "name": "Mineral Excavation",
@@ -20572,7 +20899,12 @@
     3640.0,
     1878.4
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Salt Rock": [
+     "salt_rock"
+    ]
+   }
   },
   {
    "name": "Forage for Nuts and Mushrooms",
@@ -21204,6 +21536,14 @@
       1062.1,
       1399.4
      ]
+    ]
+   },
+   "objective_kinds": {
+    "Collect 125 Pinecone": [
+     "pinecone"
+    ],
+    "Collect 60 Milk Cap Mushrooms": [
+     "milkcap"
     ]
    }
   },
@@ -21838,6 +22178,14 @@
       1399.4
      ]
     ]
+   },
+   "objective_kinds": {
+    "Collect 50 Pinecone": [
+     "pinecone"
+    ],
+    "Collect 35 Milk Cap Mushrooms": [
+     "milkcap"
+    ]
    }
   },
   {
@@ -21872,14 +22220,6 @@
    "aliases": [],
    "color": "#ffd23f",
    "points": [
-    [
-     652.1,
-     1403.5
-    ],
-    [
-     652.2,
-     1403.6
-    ],
     [
      743.7,
      1496.2
@@ -22087,34 +22427,6 @@
     [
      1137.9,
      1714.7
-    ],
-    [
-     1175.7,
-     2089.9
-    ],
-    [
-     1185.0,
-     2093.3
-    ],
-    [
-     1185.2,
-     2093.8
-    ],
-    [
-     1185.5,
-     2093.3
-    ],
-    [
-     1186.7,
-     2078.0
-    ],
-    [
-     1200.2,
-     2084.2
-    ],
-    [
-     1681.7,
-     1700.7
     ]
    ],
    "center": [
@@ -22271,14 +22583,6 @@
     ],
     "Collect 120 Button Mushroom": [
      [
-      652.1,
-      1403.5
-     ],
-     [
-      652.2,
-      1403.6
-     ],
-     [
       743.7,
       1496.2
      ],
@@ -22341,35 +22645,16 @@
      [
       1107.5,
       1778.1
-     ],
-     [
-      1175.7,
-      2089.9
-     ],
-     [
-      1185.0,
-      2093.3
-     ],
-     [
-      1185.2,
-      2093.8
-     ],
-     [
-      1185.5,
-      2093.3
-     ],
-     [
-      1186.7,
-      2078.0
-     ],
-     [
-      1200.2,
-      2084.2
-     ],
-     [
-      1681.7,
-      1700.7
      ]
+    ]
+   },
+   "objective_kinds": {
+    "Collect 100 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ],
+    "Collect 120 Button Mushroom": [
+     "button"
     ]
    }
   },
@@ -22385,14 +22670,6 @@
    "aliases": [],
    "color": "#ffd23f",
    "points": [
-    [
-     652.1,
-     1403.5
-    ],
-    [
-     652.2,
-     1403.6
-    ],
     [
      743.7,
      1496.2
@@ -22600,34 +22877,6 @@
     [
      1137.9,
      1714.7
-    ],
-    [
-     1175.7,
-     2089.9
-    ],
-    [
-     1185.0,
-     2093.3
-    ],
-    [
-     1185.2,
-     2093.8
-    ],
-    [
-     1185.5,
-     2093.3
-    ],
-    [
-     1186.7,
-     2078.0
-    ],
-    [
-     1200.2,
-     2084.2
-    ],
-    [
-     1681.7,
-     1700.7
     ]
    ],
    "center": [
@@ -22784,14 +23033,6 @@
     ],
     "Collect 35 Button Mushroom": [
      [
-      652.1,
-      1403.5
-     ],
-     [
-      652.2,
-      1403.6
-     ],
-     [
       743.7,
       1496.2
      ],
@@ -22854,35 +23095,16 @@
      [
       1107.5,
       1778.1
-     ],
-     [
-      1175.7,
-      2089.9
-     ],
-     [
-      1185.0,
-      2093.3
-     ],
-     [
-      1185.2,
-      2093.8
-     ],
-     [
-      1185.5,
-      2093.3
-     ],
-     [
-      1186.7,
-      2078.0
-     ],
-     [
-      1200.2,
-      2084.2
-     ],
-     [
-      1681.7,
-      1700.7
      ]
+    ]
+   },
+   "objective_kinds": {
+    "Collect 25 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ],
+    "Collect 35 Button Mushroom": [
+     "button"
     ]
    }
   },
@@ -22896,113 +23118,23 @@
    ],
    "aliases": [],
    "color": "#ffd23f",
-   "points": [
+   "points": [],
+   "targets": [
     [
-     904.5,
-     541.1
-    ],
-    [
-     978.2,
-     606.7
-    ],
-    [
-     978.3,
-     608.0
-    ],
-    [
-     978.7,
-     609.0
-    ],
-    [
-     979.4,
-     607.4
-    ],
-    [
-     979.8,
-     608.3
-    ],
-    [
-     980.9,
-     607.2
-    ],
-    [
-     981.7,
-     606.3
-    ],
-    [
-     982.5,
-     605.0
-    ],
-    [
-     982.8,
-     606.0
-    ],
-    [
-     983.0,
-     607.5
-    ],
-    [
-     983.5,
-     608.3
-    ],
-    [
-     983.9,
-     604.9
-    ],
-    [
-     983.9,
-     611.3
-    ],
-    [
-     984.1,
-     607.2
-    ],
-    [
-     984.4,
-     606.3
-    ],
-    [
-     984.4,
-     609.9
-    ],
-    [
-     984.7,
-     607.8
-    ],
-    [
-     984.7,
-     608.7
-    ],
-    [
-     985.6,
-     607.8
-    ],
-    [
-     985.7,
-     606.9
-    ],
-    [
-     986.1,
-     605.8
-    ],
-    [
-     986.1,
-     609.0
-    ],
-    [
-     986.9,
-     607.1
-    ],
-    [
-     1723.1,
-     841.8
+     609.6,
+     1513.4
     ]
    ],
    "center": [
     609.6,
     1513.4
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 30 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Clear Lakeweed",
@@ -23014,113 +23146,23 @@
    ],
    "aliases": [],
    "color": "#ffd23f",
-   "points": [
+   "points": [],
+   "targets": [
     [
-     904.5,
-     541.1
-    ],
-    [
-     978.2,
-     606.7
-    ],
-    [
-     978.3,
-     608.0
-    ],
-    [
-     978.7,
-     609.0
-    ],
-    [
-     979.4,
-     607.4
-    ],
-    [
-     979.8,
-     608.3
-    ],
-    [
-     980.9,
-     607.2
-    ],
-    [
-     981.7,
-     606.3
-    ],
-    [
-     982.5,
-     605.0
-    ],
-    [
-     982.8,
-     606.0
-    ],
-    [
-     983.0,
-     607.5
-    ],
-    [
-     983.5,
-     608.3
-    ],
-    [
-     983.9,
-     604.9
-    ],
-    [
-     983.9,
-     611.3
-    ],
-    [
-     984.1,
-     607.2
-    ],
-    [
-     984.4,
-     606.3
-    ],
-    [
-     984.4,
-     609.9
-    ],
-    [
-     984.7,
-     607.8
-    ],
-    [
-     984.7,
-     608.7
-    ],
-    [
-     985.6,
-     607.8
-    ],
-    [
-     985.7,
-     606.9
-    ],
-    [
-     986.1,
-     605.8
-    ],
-    [
-     986.1,
-     609.0
-    ],
-    [
-     986.9,
-     607.1
-    ],
-    [
-     1723.1,
-     841.8
+     609.6,
+     1513.4
     ]
    ],
    "center": [
     609.6,
     1513.4
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 15 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Grassland Lake",
@@ -23354,7 +23396,12 @@
     2299.1,
     1033.3
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 100 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Clear Branches",
@@ -23568,7 +23615,12 @@
     2299.1,
     1033.3
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Grassy Field Forager",
@@ -23754,7 +23806,13 @@
     2299.1,
     1033.3
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 100 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "Grassy Field Forager",
@@ -23940,7 +23998,13 @@
     2299.1,
     1033.3
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "Great Lake Cascades",
@@ -25209,6 +25273,14 @@
       1325.6
      ]
     ]
+   },
+   "objective_kinds": {
+    "Collect 30 Branch": [
+     "branches"
+    ],
+    "Collect 30 Lakeweed": [
+     "lake_weed"
+    ]
    }
   },
   {
@@ -26458,6 +26530,14 @@
       1333.3
      ]
     ]
+   },
+   "objective_kinds": {
+    "Collect 15 Lakeweed": [
+     "lake_weed"
+    ],
+    "Collect 20 Branches": [
+     "branches"
+    ]
    }
   },
   {
@@ -27578,6 +27658,17 @@
       1102.1
      ]
     ]
+   },
+   "objective_kinds": {
+    "Collect 200 Lychees": [
+     "lychee"
+    ],
+    "Collect 125 Pinecone": [
+     "pinecone"
+    ],
+    "Collect 150 Acorns": [
+     "acorn"
+    ]
    }
   },
   {
@@ -28678,6 +28769,17 @@
       1256.9
      ]
     ]
+   },
+   "objective_kinds": {
+    "Collect 50 Acorns": [
+     "acorn"
+    ],
+    "Collect 50 Lychees": [
+     "lychee"
+    ],
+    "Collect 50 Pinecone": [
+     "pinecone"
+    ]
    }
   },
   {
@@ -28936,7 +29038,13 @@
     978.0,
     2546.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "Gather Pinecones",
@@ -29218,7 +29326,12 @@
     978.0,
     2546.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Pinecone": [
+     "pinecone"
+    ]
+   }
   },
   {
    "name": "Grassy Field Forager",
@@ -29456,7 +29569,13 @@
     978.0,
     2546.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 100 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "Green Plateau",
@@ -30693,6 +30812,14 @@
       2482.5
      ]
     ]
+   },
+   "objective_kinds": {
+    "Collect 125 Pinecone": [
+     "pinecone"
+    ],
+    "Collect 200 Lychees": [
+     "lychee"
+    ]
    }
   },
   {
@@ -30811,7 +30938,12 @@
     2577.7,
     498.6
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 15 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Hilltop Haven",
@@ -31069,7 +31201,13 @@
     2117.6,
     2898.0
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 100 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "Grassy Field Forager",
@@ -31287,7 +31425,13 @@
     2117.6,
     2898.0
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "Hoodoo Hills",
@@ -31447,7 +31591,12 @@
     3590.2,
     3503.1
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 10 Death Cap": [
+     "deathcaps"
+    ]
+   }
   },
   {
    "name": "Poisonous Growth",
@@ -31561,7 +31710,12 @@
     3590.2,
     3503.1
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 120 Death Cap": [
+     "deathcaps"
+    ]
+   }
   },
   {
    "name": "Poisonous Growth",
@@ -31681,7 +31835,12 @@
     3590.2,
     3503.1
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 4 Death Cap": [
+     "deathcaps"
+    ]
+   }
   },
   {
    "name": "Poisonous Growth",
@@ -31795,7 +31954,12 @@
     3590.2,
     3503.1
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 40 Death Cap": [
+     "deathcaps"
+    ]
+   }
   },
   {
    "name": "Grassy Field Forager",
@@ -32171,6 +32335,15 @@
       2776.2,
       1325.5
      ]
+    ]
+   },
+   "objective_kinds": {
+    "Collect 100 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ],
+    "Collect 120 Button Mushroom": [
+     "button"
     ]
    }
   },
@@ -32549,6 +32722,15 @@
       1325.5
      ]
     ]
+   },
+   "objective_kinds": {
+    "Collect 25 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ],
+    "Collect 35 Button Mushroom": [
+     "button"
+    ]
    }
   },
   {
@@ -32759,7 +32941,12 @@
     2445.6,
     800.4
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Clear Lakeweed",
@@ -33393,7 +33580,12 @@
     2445.6,
     800.4
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 30 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Clear Lakeweed",
@@ -34027,7 +34219,12 @@
     2445.6,
     800.4
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 15 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Flowers for the Hive",
@@ -34231,7 +34428,13 @@
     2445.6,
     800.4
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 10 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "Flowers for the Hive",
@@ -34435,7 +34638,13 @@
     2445.6,
     800.4
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 3 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "Gather Flowers",
@@ -34633,7 +34842,13 @@
     2445.6,
     800.4
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 100 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "Gather Flowers",
@@ -34831,7 +35046,13 @@
     2445.6,
     800.4
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "Little Brook Meadow",
@@ -34915,7 +35136,12 @@
     2562.0,
     1747.4
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 10 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Clear Branches",
@@ -34979,7 +35205,12 @@
     2562.0,
     1747.4
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 3 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Little Pond",
@@ -35649,7 +35880,12 @@
     2978.4,
     1473.0
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 30 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Clear Lakeweed",
@@ -36299,7 +36535,12 @@
     2978.4,
     1473.0
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 15 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Gather Acorns",
@@ -36453,7 +36694,7 @@
      1643.8
     ],
     [
-     3002.4,
+     3002.5,
      1360.2
     ],
     [
@@ -36753,7 +36994,12 @@
     2978.4,
     1473.0
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 150 Acorns": [
+     "acorn"
+    ]
+   }
   },
   {
    "name": "Gather Acorns",
@@ -36907,7 +37153,7 @@
      1643.8
     ],
     [
-     3002.4,
+     3002.5,
      1360.2
     ],
     [
@@ -37207,7 +37453,12 @@
     2978.4,
     1473.0
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Acorns": [
+     "acorn"
+    ]
+   }
   },
   {
    "name": "Grassy Field Forager",
@@ -37409,7 +37660,13 @@
     2978.4,
     1473.0
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 100 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "Grassy Field Forager",
@@ -38826,6 +39083,15 @@
       1457.7
      ]
     ]
+   },
+   "objective_kinds": {
+    "Collect 25 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ],
+    "Collect 35 Button Mushroom": [
+     "button"
+    ]
    }
   },
   {
@@ -39044,7 +39310,12 @@
     2699.0,
     2312.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Lychees": [
+     "lychee"
+    ]
+   }
   },
   {
    "name": "Gather Pinecones",
@@ -39254,7 +39525,12 @@
     2699.0,
     2312.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Pinecone": [
+     "pinecone"
+    ]
+   }
   },
   {
    "name": "Little Stone Pond",
@@ -39416,7 +39692,12 @@
     2699.0,
     2312.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Salt Rock": [
+     "salt_rock"
+    ]
+   }
   },
   {
    "name": "Nut Foraging",
@@ -40185,6 +40466,14 @@
       2312.7
      ]
     ]
+   },
+   "objective_kinds": {
+    "Collect 125 Pinecone": [
+     "pinecone"
+    ],
+    "Collect 200 Lychees": [
+     "lychee"
+    ]
    }
   },
   {
@@ -40289,7 +40578,12 @@
     581.0,
     3075.3
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 6 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Fix Dam",
@@ -40393,7 +40687,12 @@
     581.0,
     3075.3
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 3 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Mossy Cavern",
@@ -40445,44 +40744,7 @@
    ],
    "aliases": [],
    "color": "#ff9f40",
-   "points": [
-    [
-     2058.9,
-     2149.7
-    ],
-    [
-     2113.3,
-     2050.6
-    ],
-    [
-     2172.4,
-     2122.1
-    ],
-    [
-     2760.9,
-     1310.2
-    ],
-    [
-     3040.9,
-     3157.9
-    ],
-    [
-     3057.8,
-     3100.8
-    ],
-    [
-     3093.9,
-     3052.2
-    ],
-    [
-     3101.5,
-     3046.5
-    ],
-    [
-     3148.4,
-     3096.2
-    ]
-   ],
+   "points": [],
    "targets": [
     [
      3207.8,
@@ -40493,7 +40755,12 @@
     3219.7,
     882.2
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Restore Waystone at North East Waystone by Delivering Glow Mushrooms": [
+     "glow_mushroom"
+    ]
+   }
   },
   {
    "name": "North West Waystone",
@@ -40525,44 +40792,7 @@
    ],
    "aliases": [],
    "color": "#ff9f40",
-   "points": [
-    [
-     2058.9,
-     2149.7
-    ],
-    [
-     2113.3,
-     2050.6
-    ],
-    [
-     2172.4,
-     2122.1
-    ],
-    [
-     2760.9,
-     1310.2
-    ],
-    [
-     3040.9,
-     3157.9
-    ],
-    [
-     3057.8,
-     3100.8
-    ],
-    [
-     3093.9,
-     3052.2
-    ],
-    [
-     3101.5,
-     3046.5
-    ],
-    [
-     3148.4,
-     3096.2
-    ]
-   ],
+   "points": [],
    "targets": [
     [
      915.6,
@@ -40573,7 +40803,12 @@
     951.7,
     927.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Restore Waystone at North West Waystone by Delivering Glow Mushrooms": [
+     "glow_mushroom"
+    ]
+   }
   },
   {
    "name": "Pinefield Haven",
@@ -40837,7 +41072,13 @@
     2987.1,
     2702.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 10 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "Flowers for the Hive",
@@ -41001,7 +41242,13 @@
     2987.1,
     2702.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 3 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "Gather Flowers",
@@ -41159,7 +41406,13 @@
     2987.1,
     2702.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "Gather Flowers",
@@ -41317,7 +41570,13 @@
     2987.1,
     2702.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 100 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "Red River",
@@ -42019,7 +42278,12 @@
     1131.6,
     2176.6
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 200 Lychees": [
+     "lychee"
+    ]
+   }
   },
   {
    "name": "Gather Lychees",
@@ -42681,7 +42945,12 @@
     1131.6,
     2176.6
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Lychees": [
+     "lychee"
+    ]
+   }
   },
   {
    "name": "Gather Pinecones",
@@ -43007,7 +43276,12 @@
     1131.6,
     2176.6
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Pinecone": [
+     "pinecone"
+    ]
+   }
   },
   {
    "name": "Lake Sponge",
@@ -43377,7 +43651,12 @@
     1131.6,
     2176.6
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Lake Sponge": [
+     "lake_sponge"
+    ]
+   }
   },
   {
    "name": "Lake Sponge",
@@ -43747,7 +44026,12 @@
     1131.6,
     2176.6
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 20 Lake Sponge": [
+     "lake_sponge"
+    ]
+   }
   },
   {
    "name": "Nut Foraging",
@@ -45676,6 +45960,14 @@
       2080.4
      ]
     ]
+   },
+   "objective_kinds": {
+    "Collect 125 Pinecone": [
+     "pinecone"
+    ],
+    "Collect 200 Lychees": [
+     "lychee"
+    ]
    }
   },
   {
@@ -46166,7 +46458,7 @@
      3236.8
     ],
     [
-     2746.4,
+     2746.5,
      3236.6
     ],
     [
@@ -46182,7 +46474,12 @@
     2717.0,
     3195.0
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 20 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Gather Acorns",
@@ -46436,7 +46733,12 @@
     2717.0,
     3195.0
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 150 Acorns": [
+     "acorn"
+    ]
+   }
   },
   {
    "name": "Gather Acorns",
@@ -46690,7 +46992,12 @@
     2717.0,
     3195.0
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Acorns": [
+     "acorn"
+    ]
+   }
   },
   {
    "name": "Gather Lychees",
@@ -47176,7 +47483,12 @@
     2717.0,
     3195.0
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 200 Lychees": [
+     "lychee"
+    ]
+   }
   },
   {
    "name": "Gather Lychees",
@@ -47662,7 +47974,12 @@
     2717.0,
     3195.0
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Lychees": [
+     "lychee"
+    ]
+   }
   },
   {
    "name": "Riverland",
@@ -47696,36 +48013,8 @@
    "color": "#ffd23f",
    "points": [
     [
-     2733.2,
-     3243.0
-    ],
-    [
-     2734.3,
-     3243.0
-    ],
-    [
-     2736.0,
-     3238.1
-    ],
-    [
      2736.0,
      3247.3
-    ],
-    [
-     2736.6,
-     3239.1
-    ],
-    [
-     2736.8,
-     3242.8
-    ],
-    [
-     2737.0,
-     3246.1
-    ],
-    [
-     2737.4,
-     3239.8
     ],
     [
      2737.4,
@@ -47736,60 +48025,12 @@
      3247.4
     ],
     [
-     2738.2,
-     3245.2
-    ],
-    [
-     2738.3,
-     3246.2
-    ],
-    [
      2739.1,
      3246.8
     ],
     [
-     2739.7,
-     3245.0
-    ],
-    [
-     2740.1,
-     3239.9
-    ],
-    [
-     2740.2,
-     3242.8
-    ],
-    [
-     2740.3,
-     3246.2
-    ],
-    [
      2740.7,
      3247.7
-    ],
-    [
-     2740.9,
-     3245.0
-    ],
-    [
-     2741.4,
-     3242.6
-    ],
-    [
-     2741.5,
-     3243.8
-    ],
-    [
-     2741.9,
-     3241.8
-    ],
-    [
-     2742.9,
-     3246.0
-    ],
-    [
-     2743.5,
-     3245.1
     ],
     [
      2744.6,
@@ -47800,7 +48041,12 @@
     2684.4,
     3708.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 20 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Gather Acorns",
@@ -47886,7 +48132,12 @@
     2684.4,
     3708.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Acorns": [
+     "acorn"
+    ]
+   }
   },
   {
    "name": "Riverland",
@@ -48188,7 +48439,12 @@
     3544.4,
     605.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 100 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Clear Branches",
@@ -48450,7 +48706,12 @@
     3544.4,
     605.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Gather Acorns",
@@ -48860,7 +49121,12 @@
     3544.4,
     605.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 150 Acorns": [
+     "acorn"
+    ]
+   }
   },
   {
    "name": "Gather Acorns",
@@ -49270,7 +49536,12 @@
     3544.4,
     605.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Acorns": [
+     "acorn"
+    ]
+   }
   },
   {
    "name": "Gather Roots",
@@ -49616,7 +49887,12 @@
     3544.4,
     605.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 60 Roots": [
+     "roots"
+    ]
+   }
   },
   {
    "name": "Gather Roots",
@@ -49962,7 +50238,12 @@
     3544.4,
     605.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Roots": [
+     "roots"
+    ]
+   }
   },
   {
    "name": "Mineral Excavation",
@@ -50044,7 +50325,12 @@
     3544.4,
     605.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 100 Salt Rock": [
+     "salt_rock"
+    ]
+   }
   },
   {
    "name": "Mineral Excavation",
@@ -50126,7 +50412,12 @@
     3544.4,
     605.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Salt Rock": [
+     "salt_rock"
+    ]
+   }
   },
   {
    "name": "Sickleclaw Valley",
@@ -50428,7 +50719,12 @@
     2445.7,
     3465.4
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Acorns": [
+     "acorn"
+    ]
+   }
   },
   {
    "name": "Sinkhole",
@@ -50672,7 +50968,12 @@
     1147.8,
     1104.2
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 1 Branch": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Gather Flowers",
@@ -50802,7 +51103,13 @@
     1147.8,
     1104.2
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 100 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "Gather Flowers",
@@ -50932,7 +51239,13 @@
     1147.8,
     1104.2
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "Sleeping Giant",
@@ -51190,7 +51503,12 @@
     3456.8,
     1537.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 100 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Clear Branches",
@@ -51428,7 +51746,12 @@
     3456.8,
     1537.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Gather Acorns",
@@ -52006,7 +52329,12 @@
     3456.8,
     1537.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 150 Acorns": [
+     "acorn"
+    ]
+   }
   },
   {
    "name": "Gather Acorns",
@@ -52584,7 +52912,12 @@
     3456.8,
     1537.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Acorns": [
+     "acorn"
+    ]
+   }
   },
   {
    "name": "Lake Sponge",
@@ -52918,7 +53251,12 @@
     3456.8,
     1537.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Lake Sponge": [
+     "lake_sponge"
+    ]
+   }
   },
   {
    "name": "Lake Sponge",
@@ -53252,7 +53590,12 @@
     3456.8,
     1537.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 20 Lake Sponge": [
+     "lake_sponge"
+    ]
+   }
   },
   {
    "name": "Snake Valley",
@@ -53284,113 +53627,23 @@
    ],
    "aliases": [],
    "color": "#ffd23f",
-   "points": [
+   "points": [],
+   "targets": [
     [
-     904.5,
-     541.1
-    ],
-    [
-     978.2,
-     606.7
-    ],
-    [
-     978.3,
-     608.0
-    ],
-    [
-     978.7,
-     609.0
-    ],
-    [
-     979.4,
-     607.4
-    ],
-    [
-     979.8,
-     608.3
-    ],
-    [
-     980.9,
-     607.2
-    ],
-    [
-     981.7,
-     606.3
-    ],
-    [
-     982.5,
-     605.0
-    ],
-    [
-     982.8,
-     606.0
-    ],
-    [
-     983.0,
-     607.5
-    ],
-    [
-     983.5,
-     608.3
-    ],
-    [
-     983.9,
-     604.9
-    ],
-    [
-     983.9,
-     611.3
-    ],
-    [
-     984.1,
-     607.2
-    ],
-    [
-     984.4,
-     606.3
-    ],
-    [
-     984.4,
-     609.9
-    ],
-    [
-     984.7,
-     607.8
-    ],
-    [
-     984.7,
-     608.7
-    ],
-    [
-     985.6,
-     607.8
-    ],
-    [
-     985.7,
-     606.9
-    ],
-    [
-     986.1,
-     605.8
-    ],
-    [
-     986.1,
-     609.0
-    ],
-    [
-     986.9,
-     607.1
-    ],
-    [
-     1723.1,
-     841.8
+     431.6,
+     929.7
     ]
    ],
    "center": [
     431.6,
     929.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 30 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Clear Lakeweed",
@@ -53402,113 +53655,23 @@
    ],
    "aliases": [],
    "color": "#ffd23f",
-   "points": [
+   "points": [],
+   "targets": [
     [
-     904.5,
-     541.1
-    ],
-    [
-     978.2,
-     606.7
-    ],
-    [
-     978.3,
-     608.0
-    ],
-    [
-     978.7,
-     609.0
-    ],
-    [
-     979.4,
-     607.4
-    ],
-    [
-     979.8,
-     608.3
-    ],
-    [
-     980.9,
-     607.2
-    ],
-    [
-     981.7,
-     606.3
-    ],
-    [
-     982.5,
-     605.0
-    ],
-    [
-     982.8,
-     606.0
-    ],
-    [
-     983.0,
-     607.5
-    ],
-    [
-     983.5,
-     608.3
-    ],
-    [
-     983.9,
-     604.9
-    ],
-    [
-     983.9,
-     611.3
-    ],
-    [
-     984.1,
-     607.2
-    ],
-    [
-     984.4,
-     606.3
-    ],
-    [
-     984.4,
-     609.9
-    ],
-    [
-     984.7,
-     607.8
-    ],
-    [
-     984.7,
-     608.7
-    ],
-    [
-     985.6,
-     607.8
-    ],
-    [
-     985.7,
-     606.9
-    ],
-    [
-     986.1,
-     605.8
-    ],
-    [
-     986.1,
-     609.0
-    ],
-    [
-     986.9,
-     607.1
-    ],
-    [
-     1723.1,
-     841.8
+     431.6,
+     929.7
     ]
    ],
    "center": [
     431.6,
     929.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 15 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Softsand Brook",
@@ -53814,7 +53977,12 @@
     741.7,
     996.8
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Pinecone": [
+     "pinecone"
+    ]
+   }
   },
   {
    "name": "Nut Foraging",
@@ -54815,6 +54983,14 @@
       1051.0
      ]
     ]
+   },
+   "objective_kinds": {
+    "Collect 125 Pinecone": [
+     "pinecone"
+    ],
+    "Collect 90 Tiger Nuts": [
+     "tigernut"
+    ]
    }
   },
   {
@@ -54899,7 +55075,12 @@
     3099.6,
     3103.6
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Restore Waystone at South East Waystone by Delivering Glow Mushrooms": [
+     "glow_mushroom"
+    ]
+   }
   },
   {
    "name": "South West Waystone",
@@ -54931,44 +55112,7 @@
    ],
    "aliases": [],
    "color": "#ff9f40",
-   "points": [
-    [
-     2058.9,
-     2149.7
-    ],
-    [
-     2113.3,
-     2050.6
-    ],
-    [
-     2172.4,
-     2122.1
-    ],
-    [
-     2760.9,
-     1310.2
-    ],
-    [
-     3040.9,
-     3157.9
-    ],
-    [
-     3057.8,
-     3100.8
-    ],
-    [
-     3093.9,
-     3052.2
-    ],
-    [
-     3101.5,
-     3046.5
-    ],
-    [
-     3148.4,
-     3096.2
-    ]
-   ],
+   "points": [],
    "targets": [
     [
      712.6,
@@ -54979,7 +55123,12 @@
     715.4,
     3009.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Restore Waystone at South West Waystone by Delivering Glow Mushrooms": [
+     "glow_mushroom"
+    ]
+   }
   },
   {
    "name": "Clear Lakeweed",
@@ -55109,7 +55258,12 @@
     2011.4,
     2451.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 75 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Clear Lakeweed",
@@ -55239,7 +55393,12 @@
     2011.4,
     2451.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 20 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Fix Dam",
@@ -55407,7 +55566,12 @@
     2011.4,
     2451.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 10 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Fix Dam",
@@ -55575,7 +55739,12 @@
     2011.4,
     2451.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 3 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Flowers for the Hive",
@@ -55659,7 +55828,13 @@
     2011.4,
     2451.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 5 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "Flowers for the Hive",
@@ -55743,7 +55918,13 @@
     2011.4,
     2451.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 2 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "Plant Pinecones",
@@ -55823,7 +56004,12 @@
     2011.4,
     2451.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 10 Pinecone Pile": [
+     "pinecone"
+    ]
+   }
   },
   {
    "name": "Plant Pinecones",
@@ -55903,7 +56089,12 @@
     2011.4,
     2451.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 3 Pinecone Pile": [
+     "pinecone"
+    ]
+   }
   },
   {
    "name": "Poisonous Growth",
@@ -55915,108 +56106,7 @@
    ],
    "aliases": [],
    "color": "#ff9f40",
-   "points": [
-    [
-     2795.8,
-     1279.5
-    ],
-    [
-     3436.0,
-     3479.6
-    ],
-    [
-     3436.0,
-     3481.1
-    ],
-    [
-     3476.1,
-     3508.5
-    ],
-    [
-     3476.2,
-     3526.8
-    ],
-    [
-     3476.8,
-     3507.3
-    ],
-    [
-     3477.2,
-     3528.0
-    ],
-    [
-     3477.6,
-     3508.4
-    ],
-    [
-     3477.7,
-     3507.2
-    ],
-    [
-     3478.6,
-     3527.4
-    ],
-    [
-     3478.7,
-     3528.5
-    ],
-    [
-     3479.2,
-     3527.0
-    ],
-    [
-     3479.3,
-     3528.9
-    ],
-    [
-     3479.9,
-     3528.5
-    ],
-    [
-     3481.2,
-     3528.0
-    ],
-    [
-     3522.6,
-     3434.4
-    ],
-    [
-     3536.9,
-     3438.9
-    ],
-    [
-     3537.1,
-     3438.1
-    ],
-    [
-     3542.4,
-     3578.9
-    ],
-    [
-     3542.5,
-     3580.6
-    ],
-    [
-     3543.1,
-     3580.4
-    ],
-    [
-     3550.8,
-     3564.4
-    ],
-    [
-     3552.2,
-     3565.1
-    ],
-    [
-     3552.7,
-     3565.9
-    ],
-    [
-     3563.9,
-     3547.5
-    ]
-   ],
+   "points": [],
    "targets": [
     [
      2177.8,
@@ -56027,7 +56117,12 @@
     2011.4,
     2451.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 10 Death Cap": [
+     "deathcaps"
+    ]
+   }
   },
   {
    "name": "Poisonous Growth",
@@ -56039,113 +56134,23 @@
    ],
    "aliases": [],
    "color": "#ffd23f",
-   "points": [
+   "points": [],
+   "targets": [
     [
-     2795.8,
-     1279.5
-    ],
-    [
-     3436.0,
-     3479.6
-    ],
-    [
-     3436.0,
-     3481.1
-    ],
-    [
-     3476.1,
-     3508.5
-    ],
-    [
-     3476.2,
-     3526.8
-    ],
-    [
-     3476.8,
-     3507.3
-    ],
-    [
-     3477.2,
-     3528.0
-    ],
-    [
-     3477.6,
-     3508.4
-    ],
-    [
-     3477.7,
-     3507.2
-    ],
-    [
-     3478.6,
-     3527.4
-    ],
-    [
-     3478.7,
-     3528.5
-    ],
-    [
-     3479.2,
-     3527.0
-    ],
-    [
-     3479.3,
-     3528.9
-    ],
-    [
-     3479.9,
-     3528.5
-    ],
-    [
-     3481.2,
-     3528.0
-    ],
-    [
-     3522.6,
-     3434.4
-    ],
-    [
-     3536.9,
-     3438.9
-    ],
-    [
-     3537.1,
-     3438.1
-    ],
-    [
-     3542.4,
-     3578.9
-    ],
-    [
-     3542.5,
-     3580.6
-    ],
-    [
-     3543.1,
-     3580.4
-    ],
-    [
-     3550.8,
-     3564.4
-    ],
-    [
-     3552.2,
-     3565.1
-    ],
-    [
-     3552.7,
-     3565.9
-    ],
-    [
-     3563.9,
-     3547.5
+     2011.4,
+     2451.9
     ]
    ],
    "center": [
     2011.4,
     2451.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 120 Death Cap": [
+     "deathcaps"
+    ]
+   }
   },
   {
    "name": "Poisonous Growth",
@@ -56157,108 +56162,7 @@
    ],
    "aliases": [],
    "color": "#ff9f40",
-   "points": [
-    [
-     2795.8,
-     1279.5
-    ],
-    [
-     3436.0,
-     3479.6
-    ],
-    [
-     3436.0,
-     3481.1
-    ],
-    [
-     3476.1,
-     3508.5
-    ],
-    [
-     3476.2,
-     3526.8
-    ],
-    [
-     3476.8,
-     3507.3
-    ],
-    [
-     3477.2,
-     3528.0
-    ],
-    [
-     3477.6,
-     3508.4
-    ],
-    [
-     3477.7,
-     3507.2
-    ],
-    [
-     3478.6,
-     3527.4
-    ],
-    [
-     3478.7,
-     3528.5
-    ],
-    [
-     3479.2,
-     3527.0
-    ],
-    [
-     3479.3,
-     3528.9
-    ],
-    [
-     3479.9,
-     3528.5
-    ],
-    [
-     3481.2,
-     3528.0
-    ],
-    [
-     3522.6,
-     3434.4
-    ],
-    [
-     3536.9,
-     3438.9
-    ],
-    [
-     3537.1,
-     3438.1
-    ],
-    [
-     3542.4,
-     3578.9
-    ],
-    [
-     3542.5,
-     3580.6
-    ],
-    [
-     3543.1,
-     3580.4
-    ],
-    [
-     3550.8,
-     3564.4
-    ],
-    [
-     3552.2,
-     3565.1
-    ],
-    [
-     3552.7,
-     3565.9
-    ],
-    [
-     3563.9,
-     3547.5
-    ]
-   ],
+   "points": [],
    "targets": [
     [
      2177.8,
@@ -56269,7 +56173,12 @@
     2011.4,
     2451.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 3 Death Cap": [
+     "deathcaps"
+    ]
+   }
   },
   {
    "name": "Poisonous Growth",
@@ -56281,113 +56190,23 @@
    ],
    "aliases": [],
    "color": "#ffd23f",
-   "points": [
+   "points": [],
+   "targets": [
     [
-     2795.8,
-     1279.5
-    ],
-    [
-     3436.0,
-     3479.6
-    ],
-    [
-     3436.0,
-     3481.1
-    ],
-    [
-     3476.1,
-     3508.5
-    ],
-    [
-     3476.2,
-     3526.8
-    ],
-    [
-     3476.8,
-     3507.3
-    ],
-    [
-     3477.2,
-     3528.0
-    ],
-    [
-     3477.6,
-     3508.4
-    ],
-    [
-     3477.7,
-     3507.2
-    ],
-    [
-     3478.6,
-     3527.4
-    ],
-    [
-     3478.7,
-     3528.5
-    ],
-    [
-     3479.2,
-     3527.0
-    ],
-    [
-     3479.3,
-     3528.9
-    ],
-    [
-     3479.9,
-     3528.5
-    ],
-    [
-     3481.2,
-     3528.0
-    ],
-    [
-     3522.6,
-     3434.4
-    ],
-    [
-     3536.9,
-     3438.9
-    ],
-    [
-     3537.1,
-     3438.1
-    ],
-    [
-     3542.4,
-     3578.9
-    ],
-    [
-     3542.5,
-     3580.6
-    ],
-    [
-     3543.1,
-     3580.4
-    ],
-    [
-     3550.8,
-     3564.4
-    ],
-    [
-     3552.2,
-     3565.1
-    ],
-    [
-     3552.7,
-     3565.9
-    ],
-    [
-     3563.9,
-     3547.5
+     2011.4,
+     2451.9
     ]
    ],
    "center": [
     2011.4,
     2451.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 40 Death Cap": [
+     "deathcaps"
+    ]
+   }
   },
   {
    "name": "Spined Lizard Lagoon",
@@ -56419,113 +56238,23 @@
    ],
    "aliases": [],
    "color": "#ffd23f",
-   "points": [
+   "points": [],
+   "targets": [
     [
-     2030.1,
-     2325.3
-    ],
-    [
-     2030.3,
-     2323.4
-    ],
-    [
-     2043.5,
-     2380.2
-    ],
-    [
-     2045.5,
-     2379.9
-    ],
-    [
-     2046.5,
-     2378.4
-    ],
-    [
-     2046.6,
-     2379.9
-    ],
-    [
-     2056.4,
-     2379.9
-    ],
-    [
-     2056.8,
-     2376.7
-    ],
-    [
-     2057.7,
-     2378.2
-    ],
-    [
-     2058.0,
-     2379.3
-    ],
-    [
-     2074.3,
-     2378.5
-    ],
-    [
-     2075.3,
-     2377.6
-    ],
-    [
-     2090.3,
-     2382.1
-    ],
-    [
-     2090.7,
-     2383.3
-    ],
-    [
-     2101.1,
-     2436.7
-    ],
-    [
-     2103.6,
-     2421.7
-    ],
-    [
-     2104.6,
-     2420.6
-    ],
-    [
-     2104.7,
-     2423.8
-    ],
-    [
-     2109.5,
-     2394.1
-    ],
-    [
-     2110.8,
-     2393.3
-    ],
-    [
-     2118.5,
-     2437.6
-    ],
-    [
-     2118.7,
-     2431.9
-    ],
-    [
-     2119.4,
-     2439.0
-    ],
-    [
-     2119.8,
-     2430.7
-    ],
-    [
-     2120.0,
-     2433.1
+     585.7,
+     2289.6
     ]
    ],
    "center": [
     585.7,
     2289.6
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 30 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Clear Lakeweed",
@@ -56537,113 +56266,23 @@
    ],
    "aliases": [],
    "color": "#ffd23f",
-   "points": [
+   "points": [],
+   "targets": [
     [
-     2030.1,
-     2325.3
-    ],
-    [
-     2030.3,
-     2323.4
-    ],
-    [
-     2043.5,
-     2380.2
-    ],
-    [
-     2045.5,
-     2379.9
-    ],
-    [
-     2046.5,
-     2378.4
-    ],
-    [
-     2046.6,
-     2379.9
-    ],
-    [
-     2056.4,
-     2379.9
-    ],
-    [
-     2056.8,
-     2376.7
-    ],
-    [
-     2057.7,
-     2378.2
-    ],
-    [
-     2058.0,
-     2379.3
-    ],
-    [
-     2074.3,
-     2378.5
-    ],
-    [
-     2075.3,
-     2377.6
-    ],
-    [
-     2090.3,
-     2382.1
-    ],
-    [
-     2090.7,
-     2383.3
-    ],
-    [
-     2101.1,
-     2436.7
-    ],
-    [
-     2103.6,
-     2421.7
-    ],
-    [
-     2104.6,
-     2420.6
-    ],
-    [
-     2104.7,
-     2423.8
-    ],
-    [
-     2109.5,
-     2394.1
-    ],
-    [
-     2110.8,
-     2393.3
-    ],
-    [
-     2118.5,
-     2437.6
-    ],
-    [
-     2118.7,
-     2431.9
-    ],
-    [
-     2119.4,
-     2439.0
-    ],
-    [
-     2119.8,
-     2430.7
-    ],
-    [
-     2120.0,
-     2433.1
+     585.7,
+     2289.6
     ]
    ],
    "center": [
     585.7,
     2289.6
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 15 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Gather Roots",
@@ -56929,7 +56568,12 @@
     585.7,
     2289.6
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 150 Roots": [
+     "roots"
+    ]
+   }
   },
   {
    "name": "Swamp Reservoir",
@@ -57071,7 +56715,12 @@
     1477.6,
     626.4
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 100 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Branch",
@@ -57193,7 +56842,12 @@
     1477.6,
     626.4
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Gather Mushrooms",
@@ -57455,7 +57109,12 @@
     1477.6,
     626.4
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 35 Amanita Mushroom": [
+     "amanita"
+    ]
+   }
   },
   {
    "name": "Scavenge from the Dead",
@@ -57551,7 +57210,12 @@
     1477.6,
     626.4
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 10 Bones": [
+     "bones"
+    ]
+   }
   },
   {
    "name": "Scavenge from the Dead",
@@ -57647,7 +57311,12 @@
     1477.6,
     626.4
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 3 Bones": [
+     "bones"
+    ]
+   }
   },
   {
    "name": "Sweetwater Gully",
@@ -57789,7 +57458,12 @@
     2405.8,
     1682.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 75 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Clear Branches",
@@ -57911,7 +57585,12 @@
     2405.8,
     1682.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 20 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Clear Lakeweed",
@@ -58305,7 +57984,12 @@
     2405.8,
     1682.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 75 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Clear Lakeweed",
@@ -58699,7 +58383,12 @@
     2405.8,
     1682.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 20 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Gather Mushrooms",
@@ -58737,7 +58426,12 @@
     2405.8,
     1682.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 60 Milk Cap Mushrooms": [
+     "milkcap"
+    ]
+   }
   },
   {
    "name": "Gather Mushrooms",
@@ -58775,7 +58469,12 @@
     2405.8,
     1682.7
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 35 Milk Cap Mushrooms": [
+     "milkcap"
+    ]
+   }
   },
   {
    "name": "Talon's Point",
@@ -59157,7 +58856,12 @@
     3062.5,
     2022.0
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 100 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Clear Branches",
@@ -59519,7 +59223,12 @@
     3062.5,
     2022.0
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Clear Lakeweed",
@@ -60125,7 +59834,12 @@
     3062.5,
     2022.0
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 75 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Clear Lakeweed",
@@ -60731,7 +60445,12 @@
     3062.5,
     2022.0
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 15 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Gather Lychees",
@@ -61289,7 +61008,12 @@
     3062.5,
     2022.0
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 200 Lychees": [
+     "lychee"
+    ]
+   }
   },
   {
    "name": "Gather Lychees",
@@ -61847,7 +61571,12 @@
     3062.5,
     2022.0
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Lychees": [
+     "lychee"
+    ]
+   }
   },
   {
    "name": "Lake Sponge",
@@ -62093,7 +61822,12 @@
     3062.5,
     2022.0
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Lake Sponge": [
+     "lake_sponge"
+    ]
+   }
   },
   {
    "name": "Lake Sponge",
@@ -62339,7 +62073,12 @@
     3062.5,
     2022.0
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 20 Lake Sponge": [
+     "lake_sponge"
+    ]
+   }
   },
   {
    "name": "The Cascades",
@@ -62577,7 +62316,12 @@
     2735.8,
     1653.1
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 200 Lychees": [
+     "lychee"
+    ]
+   }
   },
   {
    "name": "Gather Lychees",
@@ -62795,7 +62539,12 @@
     2735.8,
     1653.1
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Lychees": [
+     "lychee"
+    ]
+   }
   },
   {
    "name": "Lake Sponge",
@@ -62973,7 +62722,12 @@
     2735.8,
     1653.1
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Lake Sponge": [
+     "lake_sponge"
+    ]
+   }
   },
   {
    "name": "Lake Sponge",
@@ -63151,7 +62905,12 @@
     2735.8,
     1653.1
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 20 Lake Sponge": [
+     "lake_sponge"
+    ]
+   }
   },
   {
    "name": "The Crook",
@@ -63247,7 +63006,12 @@
     3176.1,
     1060.3
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 10 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Branches Down Below",
@@ -63323,7 +63087,12 @@
     3176.1,
     1060.3
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 1 Branch": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Gather Acorns",
@@ -63641,7 +63410,12 @@
     3176.1,
     1060.3
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 150 Acorns": [
+     "acorn"
+    ]
+   }
   },
   {
    "name": "Gather Acorns",
@@ -63959,7 +63733,12 @@
     3176.1,
     1060.3
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Acorns": [
+     "acorn"
+    ]
+   }
   },
   {
    "name": "Mineral Excavation",
@@ -64017,7 +63796,12 @@
     3176.1,
     1060.3
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 100 Salt Rock": [
+     "salt_rock"
+    ]
+   }
   },
   {
    "name": "Mineral Excavation",
@@ -64075,7 +63859,12 @@
     3176.1,
     1060.3
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Salt Rock": [
+     "salt_rock"
+    ]
+   }
   },
   {
    "name": "The Grotto",
@@ -64369,7 +64158,12 @@
     1885.0,
     1480.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 150 Acorns": [
+     "acorn"
+    ]
+   }
   },
   {
    "name": "Gather Acorns",
@@ -64643,7 +64437,12 @@
     1885.0,
     1480.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Acorns": [
+     "acorn"
+    ]
+   }
   },
   {
    "name": "Grassy Field Forager",
@@ -65187,6 +64986,15 @@
       1972.6,
       1538.3
      ]
+    ]
+   },
+   "objective_kinds": {
+    "Collect 100 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ],
+    "Collect 120 Button Mushroom": [
+     "button"
     ]
    }
   },
@@ -65733,6 +65541,15 @@
       1538.3
      ]
     ]
+   },
+   "objective_kinds": {
+    "Collect 25 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ],
+    "Collect 35 Button Mushroom": [
+     "button"
+    ]
    }
   },
   {
@@ -65827,7 +65644,12 @@
     942.7,
     2941.8
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 35 Amanita Mushroom": [
+     "amanita"
+    ]
+   }
   },
   {
    "name": "The Mire",
@@ -65887,7 +65709,12 @@
     2554.8,
     1874.5
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 10 Salt Rock": [
+     "salt_rock"
+    ]
+   }
   },
   {
    "name": "Mineral Excavation",
@@ -65927,7 +65754,12 @@
     2554.8,
     1874.5
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 4 Salt Rock": [
+     "salt_rock"
+    ]
+   }
   },
   {
    "name": "The Pit",
@@ -66001,7 +65833,12 @@
     1860.1,
     3454.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 30 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Clear Lakeweed",
@@ -66055,7 +65892,12 @@
     1860.1,
     3454.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 15 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Poisonous Growth",
@@ -66067,108 +65909,7 @@
    ],
    "aliases": [],
    "color": "#ff9f40",
-   "points": [
-    [
-     2795.8,
-     1279.5
-    ],
-    [
-     3436.0,
-     3479.6
-    ],
-    [
-     3436.0,
-     3481.1
-    ],
-    [
-     3476.1,
-     3508.5
-    ],
-    [
-     3476.2,
-     3526.8
-    ],
-    [
-     3476.8,
-     3507.3
-    ],
-    [
-     3477.2,
-     3528.0
-    ],
-    [
-     3477.6,
-     3508.4
-    ],
-    [
-     3477.7,
-     3507.2
-    ],
-    [
-     3478.6,
-     3527.4
-    ],
-    [
-     3478.7,
-     3528.5
-    ],
-    [
-     3479.2,
-     3527.0
-    ],
-    [
-     3479.3,
-     3528.9
-    ],
-    [
-     3479.9,
-     3528.5
-    ],
-    [
-     3481.2,
-     3528.0
-    ],
-    [
-     3522.6,
-     3434.4
-    ],
-    [
-     3536.9,
-     3438.9
-    ],
-    [
-     3537.1,
-     3438.1
-    ],
-    [
-     3542.4,
-     3578.9
-    ],
-    [
-     3542.5,
-     3580.6
-    ],
-    [
-     3543.1,
-     3580.4
-    ],
-    [
-     3550.8,
-     3564.4
-    ],
-    [
-     3552.2,
-     3565.1
-    ],
-    [
-     3552.7,
-     3565.9
-    ],
-    [
-     3563.9,
-     3547.5
-    ]
-   ],
+   "points": [],
    "targets": [
     [
      2353.8,
@@ -66179,7 +65920,12 @@
     1860.1,
     3454.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 12 Death Cap": [
+     "deathcaps"
+    ]
+   }
   },
   {
    "name": "Poisonous Growth",
@@ -66191,108 +65937,7 @@
    ],
    "aliases": [],
    "color": "#ff9f40",
-   "points": [
-    [
-     2795.8,
-     1279.5
-    ],
-    [
-     3436.0,
-     3479.6
-    ],
-    [
-     3436.0,
-     3481.1
-    ],
-    [
-     3476.1,
-     3508.5
-    ],
-    [
-     3476.2,
-     3526.8
-    ],
-    [
-     3476.8,
-     3507.3
-    ],
-    [
-     3477.2,
-     3528.0
-    ],
-    [
-     3477.6,
-     3508.4
-    ],
-    [
-     3477.7,
-     3507.2
-    ],
-    [
-     3478.6,
-     3527.4
-    ],
-    [
-     3478.7,
-     3528.5
-    ],
-    [
-     3479.2,
-     3527.0
-    ],
-    [
-     3479.3,
-     3528.9
-    ],
-    [
-     3479.9,
-     3528.5
-    ],
-    [
-     3481.2,
-     3528.0
-    ],
-    [
-     3522.6,
-     3434.4
-    ],
-    [
-     3536.9,
-     3438.9
-    ],
-    [
-     3537.1,
-     3438.1
-    ],
-    [
-     3542.4,
-     3578.9
-    ],
-    [
-     3542.5,
-     3580.6
-    ],
-    [
-     3543.1,
-     3580.4
-    ],
-    [
-     3550.8,
-     3564.4
-    ],
-    [
-     3552.2,
-     3565.1
-    ],
-    [
-     3552.7,
-     3565.9
-    ],
-    [
-     3563.9,
-     3547.5
-    ]
-   ],
+   "points": [],
    "targets": [
     [
      2353.8,
@@ -66303,7 +65948,12 @@
     1860.1,
     3454.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Deliver 6 Death Cap": [
+     "deathcaps"
+    ]
+   }
   },
   {
    "name": "Threehorn Grasslands",
@@ -66605,7 +66255,13 @@
     1868.6,
     1845.6
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 100 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "Gather Flowers",
@@ -66847,7 +66503,13 @@
     1868.6,
     1845.6
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "Two Brother's Hollow",
@@ -67085,7 +66747,12 @@
     1013.5,
     3531.9
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 100 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Gather Acorns",
@@ -68453,6 +68120,14 @@
       1084.9,
       3634.2
      ]
+    ]
+   },
+   "objective_kinds": {
+    "Collect 150 Acorns": [
+     "acorn"
+    ],
+    "Collect 60 Roots": [
+     "roots"
     ]
    }
   },
@@ -69823,6 +69498,14 @@
       3634.2
      ]
     ]
+   },
+   "objective_kinds": {
+    "Collect 50 Acorns": [
+     "acorn"
+    ],
+    "Collect 25 Roots": [
+     "roots"
+    ]
    }
   },
   {
@@ -70017,7 +69700,12 @@
     1871.0,
     1121.6
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 100 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Clear Branches",
@@ -70191,7 +69879,12 @@
     1871.0,
     1121.6
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Branches": [
+     "branches"
+    ]
+   }
   },
   {
    "name": "Clear Lakeweed",
@@ -70213,7 +69906,12 @@
     1871.0,
     1121.6
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 30 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Clear Lakeweed",
@@ -70235,7 +69933,12 @@
     1871.0,
     1121.6
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 15 Lakeweed": [
+     "lake_weed"
+    ]
+   }
   },
   {
    "name": "Gather Acorns",
@@ -70369,7 +70072,12 @@
     1871.0,
     1121.6
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Acorns": [
+     "acorn"
+    ]
+   }
   },
   {
    "name": "Gather Roots",
@@ -71047,7 +70755,12 @@
     1871.0,
     1121.6
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Roots": [
+     "roots"
+    ]
+   }
   },
   {
    "name": "Grassy Field Forager",
@@ -71353,7 +71066,13 @@
     1871.0,
     1121.6
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 100 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "Grassy Field Forager",
@@ -71659,7 +71378,13 @@
     1871.0,
     1121.6
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "Lake Sponge",
@@ -71981,7 +71706,12 @@
     1871.0,
     1121.6
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 50 Lake Sponge": [
+     "lake_sponge"
+    ]
+   }
   },
   {
    "name": "Lake Sponge",
@@ -72303,7 +72033,12 @@
     1871.0,
     1121.6
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 20 Lake Sponge": [
+     "lake_sponge"
+    ]
+   }
   },
   {
    "name": "Tyrant's Gorge",
@@ -72437,7 +72172,13 @@
     574.3,
     3590.4
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 100 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "Gather Flowers",
@@ -72551,7 +72292,13 @@
     574.3,
     3590.4
    ],
-   "source": "potservers"
+   "source": "potservers",
+   "objective_kinds": {
+    "Collect 25 Flowers": [
+     "red_ginger",
+     "yarrow"
+    ]
+   }
   },
   {
    "name": "World's Edge Falls",

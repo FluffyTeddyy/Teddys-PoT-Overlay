@@ -27,6 +27,7 @@ INCLUDE = [
     "requirements.txt", "README.md", "VERSION",
     "data/quests/*.json",
     "data/freshwater/*.json",
+    "data/item_colors.json",
     "data/maps/PUT_MAPS_HERE.txt",
 ]
 EXCLUDE_NAMES = {"make_release.py", "publish_release.py"}  # maintainer tools, not for players

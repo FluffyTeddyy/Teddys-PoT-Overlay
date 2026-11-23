@@ -13,7 +13,8 @@ from potoverlay import config as C
 from potoverlay.quests import ActiveQuestTracker, QuestDB
 from tests.replay_log import replay
 
-EXPECTED = {"Gather Mushrooms", "Gifts from the Sea", "Scavenge From The Dead"}  # the list at the end
+# The list at the end (a session at Coastland Swamp; its quests are known since the place is matched by name)
+EXPECTED = {"Gather Mushrooms", "Gifts from the Sea", "Scavenge from the Dead"}
 failures = 0
 
 

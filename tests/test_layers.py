@@ -128,8 +128,15 @@ def test_toggle() -> None:
         check("'All insects' turns on the whole group", saved() == sorted(
             ["fish_spawn", "ant_hill", "termites", "grubby_log", "wasp_nest"]), str(saved()))
         from potoverlay.layers import layer_legend, load_layers
-        lines = [e[0] for e in layer_legend(load_layers("riparia", saved()))]
-        check("legend: one line per group", sorted(lines) == ["Fish", "Insects (4)"], str(lines))
+        legend = layer_legend(load_layers("riparia", saved()))
+        lines = [e[0] for e in legend]
+        check("legend: one line per item, each in its own colour",
+              sorted(lines) == ["Ant hills", "Fish", "Grubs", "Termite mounds", "Wasp nests"]
+              and len({e[1] for e in legend}) == 5, str(legend))
+        from potoverlay.markers import MIN_COLOR_GAP, _lab
+        labs = [_lab(e[1]) for e in legend]
+        gap = min(float(np.linalg.norm(a - b)) for i, a in enumerate(labs) for b in labs[i + 1:])
+        check("...that can be told apart", gap >= MIN_COLOR_GAP, f"closest pair {gap:.0f}")
 
         food, _ = group_menu("Fish")
         next(a for a in food.actions() if a.text() == "Hide all food").trigger()
@@ -241,11 +248,16 @@ def test_hud_objectives_and_hoard() -> None:
         both.update(["Quests", "Gather Mushrooms", "- Collect 15 Chanterelle Mushroom 4/15",
                      "- Collect 15 Death Cap 3/15"])
     picked = pick_labeled(both.labeled_objectives, db.by_key(), (1979.0, 2441.7))
-    from potoverlay.markers import assign_colors
+    from potoverlay.app import item_colors
+    from potoverlay.markers import _rgb, assign_colors
     names = sorted(n for _, n in picked)
-    cols = assign_colors(names)
+    cols = assign_colors(names, item_colors(picked))
     check("both items listed: own legend line and colour each",
           names == ["Chanterelle Mushroom", "Death Cap"] and len(set(cols.values())) == 2, f"{names} {cols}")
+    r, g, b = _rgb(cols.get("Chanterelle Mushroom", "#000000"))
+    r2, g2, b2 = _rgb(cols.get("Death Cap", "#000000"))
+    check("...in the items' own colours: chanterelle orange, death cap green", r > g > b and g2 > r2 and g2 > b2,
+          str(cols))
     check("their spawns don't overlap", not set(picked[0][0].points) & set(picked[1][0].points))
     w = TrackerWorker.__new__(TrackerWorker)
     w._layers, w._hoard, w._hoard_cache = [], None, (None, None)
@@ -322,6 +334,14 @@ def test_fresh_water() -> None:
           all(inside(rip, x, y) for x, y in ((300, 1750), (650, 1990), (400, 2400))))
     check("riparia: the cliff beside them isn't", not inside(rip, 110, 2250))
     check("riparia: the delta joins the sea, so it isn't fresh", not inside(rip, 2600, 1300))
+    check("riparia: a delta arm by Cedrus Forest is sea, not fresh", not inside(rip, 1318, 1883))
+    check("riparia: the river down to the SW corner is fresh", inside(rip, 339, 3828))
+    check("gondwa: snow isn't water", not inside(gondwa, 2985, 1756))
+    # Ponds checked in game (you could drink there), though the map image barely shows them.
+    near = [any(inside(rip, x + dx, y + dy) for dx in range(-10, 11, 2) for dy in range(-10, 11, 2))
+            for x, y in ((2476, 1120), (1978, 3560), (2050, 3438))]
+    check("riparia: the ponds checked in game are marked (Volcano Islands, 2 in Hollow Hills craters)",
+          all(near), str(near))
 
     from PySide6.QtWidgets import QApplication
 
@@ -341,6 +361,22 @@ def test_fresh_water() -> None:
     check("panned: repaints", len(updates) > n0)
 
 
+def test_item_colors() -> None:
+    print("markers coloured like the item")
+    from potoverlay.layers import BY_ID
+    from potoverlay.markers import MIN_COLOR_GAP, _lab, _rgb, assign_colors, item_color
+    r, g, b = _rgb(item_color("pinecone"))
+    check("pinecones are green", g > r and g > b, item_color("pinecone"))
+    r, g, b = _rgb(item_color("berry"))
+    check("berries are red", r > g and r > b, item_color("berry"))
+    check("food layers use the item's colour", BY_ID["pinecone"].color == item_color("pinecone"))
+    cols = assign_colors(["Death Cap", "Pinecone", "Gather Clams"],
+                         {"Death Cap": item_color("deathcaps"), "Pinecone": item_color("pinecone")})
+    labs = [_lab(c) for c in cols.values()]
+    gap = min(float(np.linalg.norm(a - b)) for i, a in enumerate(labs) for b in labs[i + 1:])
+    check("two green items at once still look different", gap >= MIN_COLOR_GAP, f"{cols} gap {gap:.0f}")
+
+
 def test_spawn_fix() -> None:
     print("spawn positions corrected per map (F10 reports)")
     from potoverlay.spawnfix import to_image
@@ -358,6 +394,50 @@ def test_spawn_fix() -> None:
     check("food layers use the corrected positions", lay and np.allclose(lay[0].points, to_image("riparia", berry)))
 
 
+def test_quest_places() -> None:
+    print("quests whose place Potservers names differently, or with no items near it")
+    from potoverlay.app import pick_labeled
+    from potoverlay.quests import QuestDB
+
+    db = QuestDB.load(C.quest_file("riparia"), "riparia")
+    swamp = (3060.0, 2700.0)  # Coastal Swamp ("Coastland Swamp" in the quest data)
+    lines = ["Quests", "Wetland Reeds", "- Collect 30 Reeds 4/30"]
+    for _ in range(2):
+        act = _tracked(db, lines + lines[1:])
+    shown = {name: q for q, name in pick_labeled(act, db.by_key(), swamp)}
+    reeds = shown.get("Reeds")
+    check("Wetland Reeds at Coastland Swamp has reed markers", reeds is not None and reeds.poi == "Coastland Swamp"
+          and len(reeds.points) > 50, str({k: (v.poi, len(v.points)) for k, v in shown.items()}))
+
+    bog = (1979.0, 2441.7)  # Stillwater Bog
+    lines = ["Quests", "Gifts from the Sea", "- Collect 30 Starfish 0/30", "- Collect 25 Conch 0/25"]
+    act = _tracked(db, lines)
+    act = _tracked(db, lines)
+    shown = {name: q for q, name in pick_labeled(act, db.by_key(), bog)}
+    far = [n for n, q in shown.items() if q.poi == "Stillwater Bog" and q.points and
+           max(np.hypot(*(np.asarray(q.points) - bog).T)) > 1000]  # ~1.3 km: across the map
+    check("Stillwater Bog's Gifts from the Sea: no markers far outside the bog", not far and "Conch" in shown,
+          str({k: (v.poi, len(v.points)) for k, v in shown.items()}))
+
+    # Quest items within minimap reach are shown wherever they are, even outside the quest's POI.
+    from potoverlay.layers import spawn_index
+    spawns = spawn_index("riparia")
+    star = spawns["starfish"]
+    me = star[int(np.argmin(np.hypot(*(star - bog).T)))]  # the starfish nearest the bog, outside it
+    reach = 300.0
+
+    def nearby(kinds):
+        return [tuple(p) for k in kinds for p in spawns.get(k, [])
+                if np.hypot(p[0] - me[0], p[1] - me[1]) <= reach]
+    shown = {name: q for q, name in pick_labeled(act, db.by_key(), me, nearby)}
+    stars = np.asarray(shown["Starfish"].points) if "Starfish" in shown else np.zeros((0, 2))
+    want = int((np.hypot(*(star - me).T) <= reach).sum())
+    close = int((np.hypot(*(stars - me).T) <= reach).sum())
+    check("every starfish within minimap reach is shown, POI or not", want > 1 and close == want, f"{close} of {want}")
+    gaps = np.hypot(*(stars[:, None] - stars[None]).transpose(2, 0, 1)) + np.eye(len(stars)) * 1e9
+    check("...once each", len(stars) and gaps.min() >= 1.0)
+
+
 def _tracked(db, lines):
     from potoverlay.quests import ActiveQuestTracker
     t = ActiveQuestTracker(db)
@@ -373,6 +453,8 @@ if __name__ == "__main__":
     test_fish_buff_file()
     test_hud_objectives_and_hoard()
     test_fresh_water()
+    test_item_colors()
     test_spawn_fix()
+    test_quest_places()
     print("\nALL PASSED" if failures == 0 else f"\n{failures} FAILED")
     sys.exit(1 if failures else 0)

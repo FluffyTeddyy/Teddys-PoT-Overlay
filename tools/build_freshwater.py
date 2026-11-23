@@ -2,10 +2,11 @@
 
     python -m tools.build_freshwater
 
-Gondwa and Panjura: VulnonaMAP's drinking water outlines (lakes), circles (ponds) and lines
-(rivers), with their names. Riparia: VulnonaMAP only has names there, so the outlines come from
-the map image (inland water, see potoverlay/freshwater.py), kept only where VulnonaMAP names a
-water spot; a named spot with no outline gets the water right around it, or a small circle.
+Outlines come from the map image: water is told from land by its colour on that map (learned
+from water and land spawns), and water joined to the sea is never fresh. VulnonaMAP guides which
+inland water counts: next to one of its lakes, ponds or rivers (Gondwa, Panjura), or to one of its
+water names (Riparia, where it has names only; big water there counts without one). Its rivers
+also bridge small gaps in a stream and count as joins to the sea.
 
 VulnonaMAP uses its own coordinates; they're fitted onto ours with the waystones both have
 (typically ~0.4 grid units off, 3 px on the 4096 px map).
@@ -25,7 +26,6 @@ from potoverlay import spawnfix
 from potoverlay.locator import imread_any
 
 RAW = C.DATA_DIR / "vulnona"
-RES = 2048  # Vulnona shapes are drawn at this size, then outlined
 MAPS = ("riparia", "gondwa", "panjura")
 NUM = re.compile(r"^(-?[\d.]+),(-?[\d.]+)(?:,(.*))?$")
 
@@ -110,119 +110,202 @@ def _proper(name: str) -> bool:
         and not re.match(r"^[ns]\d+[ew]\d+", name, re.I) and "xxx" not in name.lower()
 
 
-def build(map_name: str) -> dict:
-    cfg, recs = parse((RAW / f"{map_name}.txt").read_text(encoding="utf-8"))
-    s, T, err = fit(recs, map_name)
-    img = imread_any(C.map_image_path(map_name))
-    full = (img.shape[1], img.shape[0])
-    to_grid = lambda xy: s * np.asarray(xy, np.float64).reshape(-1, 2) + T  # noqa: E731
-    water = [r for r in recs if r["cls"] == "water" and r["pts"]]
+SUPPORT = 24        # px: inland water this close to a VulnonaMAP lake, pond or river counts
+NAME_REACH = 98     # px (12 grid units): or this close to a water name (labels sit beside the water)
+BIG = 1600          # px area (~50 m across): on maps where VulnonaMAP has only names, water this
+                    # big counts without a name next to it
+RIVER_GAP = 15      # px: gaps along a VulnonaMAP river (a bridge, trees) are closed up to this
+POND_R = 7          # px (~9 m): a pond too small or shaded to see on the map image is drawn this big
+SEA_CLEAR = 25      # px: a pond VulnonaMAP marks this close to the sea is left out (it may be the sea)
+POND_WORDS = re.compile(r"\b(pond|ponds|puddle|pool|spring|springs)\b", re.I)
 
-    # Names: the label text where Vulnona places one, else the shape's name at its middle.
+# Water checked in game (map image pixels: where the player stood drinking, found from the
+# minimap of a screenshot). Kept even where the map image shows no water.
+CONFIRMED = {
+    "riparia": [
+        (2476, 1120, "Volcano south puddle"),   # pond in a clearing on Volcano Islands
+        (1978, 3560, "Hollow Hills Pond 3"),    # puddle in a crater
+        (2050, 3438, "Hollow Hills Pond 2"),    # puddle in a crater
+    ],
+}
+
+
+def guides(recs: list[dict], to_px, size: int) -> tuple[np.ndarray, np.ndarray, dict]:
+    """VulnonaMAP's water on our map image: (lakes and ponds filled, rivers as lines, names)."""
+    water = [r for r in recs if r["cls"] == "water" and r["pts"]]
+    shapes = np.zeros((size, size), np.uint8)
+    rivers = np.zeros((size, size), np.uint8)
     names: dict[str, tuple[float, float]] = {}
-    for r in water:
+    for r in water:  # names: the label text where Vulnona places one, else the shape's name
         if r["type"] == "text":
             label = _clean(r["pts"][0][2]) or _humanize(r["name"])
             if _proper(label):
-                names.setdefault(label, tuple(to_grid(r["pts"][0][:2])[0]))
+                names.setdefault(label, tuple(to_px(r["pts"][0][:2])[0]))
     texted = {_humanize(r["name"]).lower() for r in water if r["type"] == "text"}
     for r in water:
         nm = _humanize(r["name"])
         if r["type"] != "text" and "notxt" not in r["flags"] and nm.lower() not in texted and _proper(nm):
-            names.setdefault(nm, tuple(to_grid([p[:2] for p in r["pts"]]).mean(0)))
+            names.setdefault(nm, tuple(to_px([p[:2] for p in r["pts"]]).mean(0)))
 
-    k = RES / F.GRID  # grid -> raster px
-    mask = np.zeros((RES, RES), np.uint8)
+    unit = float(np.hypot(*(to_px([(1, 0)]) - to_px([(0, 0)]))[0]))  # px per Vulnona unit
 
     def ellipse(x, y, rx, ry, rot):
-        c = to_grid([(x, y)])[0] * k
-        cv2.ellipse(mask, (int(round(c[0])), int(round(c[1]))),
-                    (int(round(max(1.5, s * rx) * k)), int(round(max(1.5, s * ry) * k))), rot, 0, 360, 1, -1)
+        c = to_px([(x, y)])[0]
+        cv2.ellipse(shapes, (int(round(c[0])), int(round(c[1]))),
+                    (max(3, int(round(rx * unit))), max(3, int(round(ry * unit)))), rot, 0, 360, 1, -1)
 
-    for r in water:  # outlines, ponds and rivers drawn by hand on VulnonaMAP
-        g = to_grid([p[:2] for p in r["pts"]]) * k
+    def pieces(r):  # "M" starts a new stretch / sub-outline
+        g = to_px([p[:2] for p in r["pts"]])
+        out, cur = [], []
+        for (x, y), p in zip(g, r["pts"]):
+            if p[2].startswith("M") and cur:
+                out.append(cur)
+                cur = []
+            cur.append((x, y))
+        out.append(cur)
+        return [np.round(np.array(pc)).astype(np.int32) for pc in out]
+
+    for r in water:
         radii = [_radius(p[2]) for p in r["pts"]]
-        if any(radii):  # a list of ponds, each "x,y,R=rx/ry/rot" (or "R=rx-ry T=rot")
+        if any(radii):  # a list of ponds, each "x,y,R=rx/ry/rot"
             for (x, y, _), rr in zip(r["pts"], radii):
                 if rr:
                     ellipse(x, y, *rr)
-            continue
-        if r["type"] == "circle":  # one or more ponds, each "x,y,rx,ry,rot"
+        elif r["type"] == "circle":  # ponds, each "x,y,rx,ry,rot"
             for x, y, rest in r["pts"]:
                 vals = [float(v) for v in rest.split(",") if re.fullmatch(r"-?[\d.]+", v.strip())]
                 rx = vals[0] if vals else 1.0
                 ellipse(x, y, rx, vals[1] if len(vals) > 1 else rx, vals[2] if len(vals) > 2 else 0.0)
-            continue
-        if r["type"] == "path" and "fill" in r["flags"]:
-            shape = np.zeros_like(mask)
-            parts, cur = [], []
-            for (x, y), p in zip(g, r["pts"]):
-                if p[2].startswith("M") and cur:
-                    parts.append(cur)
-                    cur = []
-                cur.append((x, y))
-            parts.append(cur)
-            for part in parts:  # sub-outlines alternate lake / island (even-odd)
+        elif r["type"] == "path" and "fill" in r["flags"]:
+            shape = np.zeros_like(shapes)
+            for part in pieces(r):  # sub-outlines alternate lake / island (even-odd)
                 if len(part) >= 3:
-                    one = np.zeros_like(mask)
-                    cv2.fillPoly(one, [np.round(np.array(part)).astype(np.int32)], 1)
+                    one = np.zeros_like(shapes)
+                    cv2.fillPoly(one, [part], 1)
                     shape ^= one
-            mask |= shape
-        elif r["type"] in ("line", "path"):  # rivers; "M" starts a new stretch of river
-            pieces, cur = [], []
-            for (x, y), p in zip(g, r["pts"]):
-                if p[2].startswith("M") and cur:
-                    pieces.append(cur)
-                    cur = []
-                cur.append((x, y))
-            pieces.append(cur)
-            cv2.polylines(mask, [np.round(np.array(pc)).astype(np.int32) for pc in pieces if len(pc) >= 2],
-                          False, 1, max(2, int(round(1.2 * k))))
+            shapes |= shape
+        elif r["type"] in ("line", "path"):
+            cv2.polylines(rivers, [pc for pc in pieces(r) if len(pc) >= 2], False, 1, 3)
+    return shapes, rivers, names
 
-    detected = 0
-    drawn = any(r["type"] in ("path", "line") for r in water)  # lakes/rivers outlined by hand
-    if not drawn and names:
-        # Riparia: names only. Outlines from the map image, kept where a named water spot is.
-        markers = json.loads((C.DATA_DIR / "potservers" / f"map_{map_name}.json").read_text(encoding="utf-8"))
-        wat = F.water_mask(img, markers["data"].get("markers", []))
-        fresh = F.inland(wat)
-        W = F.WORK
-        kw = W / F.GRID
-        n, lab, stats, _ = cv2.connectedComponentsWithStats(fresh, connectivity=8)
-        dist = cv2.distanceTransform(1 - fresh, cv2.DIST_L2, 5)
-        keep = np.zeros(n, bool)
-        local = np.zeros_like(fresh)
-        for name, (gx, gy) in names.items():
-            x, y = int(np.clip(gx * kw, 0, W - 1)), int(np.clip(gy * kw, 0, W - 1))
-            if dist[y, x] <= 12 * kw:  # water at or beside the name (labels sit next to the water)
-                disc = np.zeros_like(fresh)
-                cv2.circle(disc, (x, y), int(12 * kw), 1, -1)
-                keep[np.unique(lab[(disc == 1) & (fresh == 1)])] = True
-            else:  # nothing detected there: the water right around the name, or a small circle
-                disc = np.zeros_like(fresh)
-                cv2.circle(disc, (x, y), int(4 * kw), 1, -1)
-                around = wat & disc
-                if around.sum() >= 6:
-                    local |= around
-                else:
-                    cv2.circle(local, (x, y), int(2 * kw), 1, -1)
-        keep[0] = False
-        detected = int(keep.sum())
-        work_mask = keep[lab].astype(np.uint8) | local
-        mask |= cv2.resize(work_mask, (RES, RES), interpolation=cv2.INTER_NEAREST)
 
-    zones = F.outlines(mask, full, eps=0.8)
-    if drawn:  # VulnonaMAP shapes were fitted to Potservers' waystones: same correction as spawns
-        zones = [spawnfix.correct(map_name, z).tolist() for z in zones]
-    # (Riparia's outlines come from the map image itself, which is already the overlay's frame.)
-    px = full[0] / F.GRID
+def pond_at(img: np.ndarray, x: float, y: float, search: int = 14) -> np.ndarray:
+    """A small pond at (x, y), as a mask the size of the map: the blue patch right there on the
+    map image (a pool shows bluer than the rock and grass around it), or a small round pond where
+    the map shows none (too small, or under trees)."""
+    size = img.shape[0]
+    out = np.zeros((size, size), np.uint8)
+    x, y = int(round(x)), int(round(y))
+    x0, y0 = max(0, x - search), max(0, y - search)
+    patch = cv2.GaussianBlur(img[y0:y + search + 1, x0:x + search + 1].astype(np.float32), (3, 3), 0)
+    blue = patch[..., 0] - patch[..., 2]
+    disc = np.zeros(blue.shape, np.uint8)
+    cv2.circle(disc, (x - x0, y - y0), search, 1, -1)
+    if disc.any():
+        cut = max(4.0, float(np.median(blue[disc == 1])) + 15)  # (cracks in the rock are barely blue)
+        n, lab, st, _ = cv2.connectedComponentsWithStats(((blue > cut) & (disc == 1)).astype(np.uint8), connectivity=8)
+        if n > 1:  # the bluest patch: the pool, not a shadow beside it
+            peak = [float(blue[lab == j].max()) for j in range(1, n)]
+            i = 1 + int(np.argmax(peak))
+            if 4 <= st[i, cv2.CC_STAT_AREA] <= 400:
+                blob = cv2.dilate((lab == i).astype(np.uint8), np.ones((3, 3), np.uint8))
+                out[y0:y0 + blob.shape[0], x0:x0 + blob.shape[1]] = blob
+                return out
+    cv2.circle(out, (x, y), POND_R, 1, -1)
+    return out
+
+
+def build(map_name: str) -> tuple[dict, dict]:
+    """(the baked data, notes for checking: water kept on size alone, big water dropped, names
+    with no water found near them)."""
+    cfg, recs = parse((RAW / f"{map_name}.txt").read_text(encoding="utf-8"))
+    s, T, err = fit(recs, map_name)
+    img = imread_any(C.map_image_path(map_name))
+    size = img.shape[0]
+
+    def to_px(xy):  # Vulnona -> Potservers grid (fitted on waystones) -> our map image
+        g = s * np.asarray(xy, np.float64).reshape(-1, 2) + T
+        return spawnfix.correct(map_name, g * (spawnfix.IMAGE_SIZE / spawnfix.GRID)) * (size / spawnfix.IMAGE_SIZE)
+
+    shapes, rivers, names = guides(recs, to_px, size)
+    names_only = not shapes.any() and not rivers.any()
+
+    markers = json.loads((C.DATA_DIR / "potservers" / f"map_{map_name}.json").read_text(encoding="utf-8"))
+    score, loose = F.water_score(img, markers["data"].get("markers", []), map_name)
+    # Water: water-ish areas that are clearly water somewhere, or where VulnonaMAP has water.
+    wet = cv2.morphologyEx((score > loose).astype(np.uint8), cv2.MORPH_OPEN, np.ones((3, 3), np.uint8))
+    n, lab, _, _ = cv2.connectedComponentsWithStats(wet, connectivity=8)
+    strong = np.bincount(lab.ravel(), (score > 0).ravel(), n)
+    guided = np.bincount(lab.ravel(), (shapes | rivers).ravel(), n)
+    keep = (strong >= 4) | (guided > 0)
+    keep[0] = False
+    water = keep[lab].astype(np.uint8)
+    del lab, wet, score
+
+    sea = cv2.dilate(F.ocean(water, rivers), np.ones((5, 5), np.uint8))
+    inland = water & (1 - sea)
+    if rivers.any():  # close small gaps along rivers (bridges, trees), never into the sea
+        near_river = cv2.dilate(rivers, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7)))
+        k = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (RIVER_GAP, RIVER_GAP))
+        inland |= cv2.morphologyEx(inland, cv2.MORPH_CLOSE, k) & near_river & (1 - sea)
+
+    # Which inland water counts: next to VulnonaMAP's water or a water name; or big (names-only maps)
+    support = cv2.dilate(shapes | rivers, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * SUPPORT + 1,) * 2))
+    for x, y in names.values():
+        cv2.circle(support, (int(round(x)), int(round(y))), NAME_REACH, 1, -1)
+    n, lab, st, cen = cv2.connectedComponentsWithStats(inland, connectivity=8)
+    supported = np.bincount(lab.ravel(), support.ravel(), n) > 0
+    area = st[:, cv2.CC_STAT_AREA]
+    keep = (area >= 24) & (supported | (names_only & (area >= BIG)))
+    keep[0] = False
+    fresh = keep[lab].astype(np.uint8)
+    del lab
+
+    # Ponds VulnonaMAP knows that don't show on the map image (too small, or shaded): every one
+    # checked in game was real. Its pond shapes, then pond names with no water around them; never
+    # next to the sea. Spots confirmed in game always.
+    near_sea = cv2.dilate(sea, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * SEA_CLEAR + 1,) * 2))
+    seen = cv2.dilate(fresh, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * SUPPORT + 1,) * 2))
+    added = []
+    n, lab, st, cen = cv2.connectedComponentsWithStats(shapes, connectivity=8)
+    for i in range(1, n):
+        one = lab == i
+        if not seen[one].any() and not near_sea[one].any():
+            fresh[one] = 1
+            added.append(("shape", cen[i].round().tolist()))
+    del lab
+    confirmed = CONFIRMED.get(map_name, [])
+    for nm, (x, y) in names.items():
+        xi, yi = int(np.clip(x, 0, size - 1)), int(np.clip(y, 0, size - 1))
+        # (a label sits beside its water: any water within NAME_REACH is probably the one named)
+        water_near = fresh[max(0, yi - NAME_REACH):yi + NAME_REACH, max(0, xi - NAME_REACH):xi + NAME_REACH].any()
+        if (POND_WORDS.search(nm) and not any(c[2] == nm for c in confirmed)
+                and not water_near and not near_sea[yi, xi]):
+            fresh |= pond_at(img, x, y)
+            added.append((nm, [round(x), round(y)]))
+    for x, y, nm in confirmed:
+        if not fresh[max(0, y - POND_R):y + POND_R, max(0, x - POND_R):x + POND_R].any():
+            fresh |= pond_at(img, x, y)
+            added.append((nm + " (checked in game)", [x, y]))
+
+    notes = {
+        "ponds_added": added,
+        "kept_on_size_only": [(cen[i].round().tolist(), int(area[i])) for i in range(1, n)
+                              if keep[i] and not supported[i]],
+        "dropped_big": [(cen[i].round().tolist(), int(area[i])) for i in range(1, n)
+                        if not keep[i] and area[i] >= 400],
+        "names_without_water": [nm for nm, (x, y) in names.items()
+                                if not fresh[max(0, int(y) - NAME_REACH):int(y) + NAME_REACH,
+                                             max(0, int(x) - NAME_REACH):int(x) + NAME_REACH].any()],
+    }
+    zones = F.outlines(fresh, (size, size), eps=1.0)
     return {
         "map": map_name,
-        "source": F.CREDIT + (" + map image (outlines)" if detected else ""),
+        "source": F.CREDIT + " (guide); outlines from the map image",
         "fit_error_grid": round(err, 2),
         "zones": [[[round(x, 1), round(y, 1)] for x, y in z] for z in zones],
-        "names": [{"name": n, "x": round(gx * px, 1), "y": round(gy * px, 1)} for n, (gx, gy) in sorted(names.items())],
-    }
+        "names": [{"name": nm, "x": round(x, 1), "y": round(y, 1)} for nm, (x, y) in sorted(names.items())],
+    }, notes
 
 
 def main() -> int:
@@ -232,10 +315,13 @@ def main() -> int:
         if not (RAW / f"{m}.txt").exists():
             print(f"[{m}] no VulnonaMAP data (run python -m tools.fetch_vulnona)")
             continue
-        data = build(m)
+        data, notes = build(m)
         F.path(m).write_text(json.dumps(data, separators=(",", ":")) + "\n", encoding="utf-8")
         print(f"[{m}] {len(data['zones'])} outlines, {len(data['names'])} names, "
               f"coordinates fitted to {data['fit_error_grid']} grid units -> {F.path(m).name}")
+        for k, v in notes.items():
+            if v:
+                print(f"    {k.replace('_', ' ')}: {v}")
     return 0
 
 

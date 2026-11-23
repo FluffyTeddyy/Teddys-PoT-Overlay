@@ -7,11 +7,12 @@ from __future__ import annotations
 import json
 import logging
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 import numpy as np
 
 from . import config as C
+from .markers import assign_colors, item_color
 from .spawnfix import to_image
 
 log = logging.getLogger(__name__)
@@ -57,7 +58,8 @@ FOOD_GROUPS = [
         ("lake_weed", "Lakeweed"), ("roots", "Roots"), ("succulent", "Succulents"))),
 ]
 
-LAYERS = [LayerKind(kid, label, g.color, g.style, g.name) for g in FOOD_GROUPS for kid, label in g.items]
+# Each item in its own colour (from its picture, data/item_colors.json); the shape says the group.
+LAYERS = [LayerKind(kid, label, item_color(kid) or g.color, g.style, g.name) for g in FOOD_GROUPS for kid, label in g.items]
 BY_ID = {k.id: k for k in LAYERS}
 
 # "Hoard: <type>" event quests: collect as much as you can of a list of items, shown under the
@@ -116,15 +118,18 @@ class Layer:
 
 
 def layer_legend(layers: list["Layer"]) -> list[tuple[str, str, str]]:
-    """Legend lines for the shown food: one per group ("Insects (3)"), or the item's own name if
-    it's the only one of its group."""
+    """Legend lines for the shown food: one per item (each has its own colour), or one per group
+    ("Insects (3)") where the items share a colour."""
     by_group: dict[str, list[Layer]] = {}
     for layer in layers:
         by_group.setdefault(layer.kind.group or layer.kind.label, []).append(layer)
     out = []
     for group, ls in by_group.items():
         k = ls[0].kind
-        out.append((k.label if len(ls) == 1 else f"{group} ({len(ls)})", k.color, k.style))
+        if len(ls) > 1 and len({x.kind.color for x in ls}) > 1:
+            out += [(x.kind.label, x.kind.color, x.kind.style) for x in ls]
+        else:
+            out.append((k.label if len(ls) == 1 else f"{group} ({len(ls)})", k.color, k.style))
     return out
 
 
@@ -143,7 +148,17 @@ def load_layers(map_name: str, kinds: list[str]) -> list[Layer]:
         if m["id"] in kinds and m["id"] in BY_ID and m.get("points"):
             pts = to_image(map_name, m["points"])
             out.append(Layer(BY_ID[m["id"]], pts))
-    return out
+    # Items that look alike (ant hills, grubs and termites are all brown) are nudged apart.
+    cols = assign_colors([l.kind.label for l in out], {l.kind.label: l.kind.color for l in out})
+    return [Layer(replace(l.kind, color=cols[l.kind.label]), l.points) for l in out]
+
+
+def spawn_index(map_name: str) -> dict[str, np.ndarray]:
+    """Every spawn on the map by kind, in map image pixels (for quest items near the player)."""
+    data = _map_data(map_name)
+    if not data:
+        return {}
+    return {m["id"]: to_image(map_name, m["points"]) for m in data.get("markers", []) if m.get("points")}
 
 
 def hoard_type(label: str) -> str:

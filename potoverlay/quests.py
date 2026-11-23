@@ -47,6 +47,9 @@ class Quest:
     # Spawn points per objective ("Collect 15 Death Cap" -> its death caps), so only what's still
     # listed on the HUD gets markers. `points` holds them all.
     objective_points: dict[str, list[Point]] = field(default_factory=dict)
+    # Potservers spawn kinds per objective ("Collect 15 Conch" -> clams, seashells, spined_conch),
+    # so the same items near you are shown too, wherever they are.
+    objective_kinds: dict[str, list[str]] = field(default_factory=dict)
 
     @property
     def key(self) -> str:
@@ -61,6 +64,12 @@ class Quest:
         if not mine:
             return list(self.points)
         return list(dict.fromkeys(p for o in mine for p in self.objective_points[o]))
+
+    def kinds_for(self, objective_ids) -> list[str]:
+        """Spawn kinds of these objectives; all of the quest's if none of them is listed."""
+        ids = set(objective_ids or ())
+        mine = [o for o in self.objective_kinds if objective_id(o) in ids] or list(self.objective_kinds)
+        return list(dict.fromkeys(k for o in mine for k in self.objective_kinds[o]))
 
     def title_keys(self) -> list[str]:
         return [k for k in (normalize(x) for x in [self.name, *self.aliases]) if k]
@@ -103,6 +112,7 @@ class QuestDB:
                 source=q.get("source", ""),
                 objective_points={o: [(float(p[0]), float(p[1])) for p in ps]
                                   for o, ps in (q.get("objective_points") or {}).items()},
+                objective_kinds={o: list(ks) for o, ks in (q.get("objective_kinds") or {}).items()},
             ))
         return cls(raw.get("map", map_name), quests, raw.get("attribution", ""), raw.get("data_updated_at", ""))
 
@@ -131,6 +141,8 @@ class QuestDB:
             if len(q.objective_points) > 1:  # only needed when a quest has several items
                 d["objective_points"] = {o: [[round(x, 1), round(y, 1)] for x, y in ps]
                                          for o, ps in q.objective_points.items()}
+            if q.objective_kinds:
+                d["objective_kinds"] = q.objective_kinds
             out.append(d)
         raw = {"map": self.map_name}
         if self.attribution:

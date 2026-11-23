@@ -17,6 +17,7 @@ from pathlib import Path
 
 import cv2
 import numpy as np
+from rapidfuzz import fuzz
 
 from potoverlay import config as C
 from potoverlay.quests import Quest, QuestDB
@@ -25,7 +26,8 @@ from potoverlay.spawnfix import to_image
 RAW = C.DATA_DIR / "potservers"
 ATTRIBUTION = "Data from Potservers (https://potservers.net). Unofficial; Path of Titans belongs to Alderon Games."
 NEAR_POI = 6.0        # grid units outside the POI outline that still count as "in" it
-FALLBACK_NEAREST = 25 # if no spawns in the POI, use this many nearest to it
+FALLBACK_NEAREST = 25 # if an item has no spawns in the POI, use this many nearest to it...
+FALLBACK_REACH = 30.0 # ...but only within this many grid units (~300 m) of the POI's outline
 
 TYPE_COLORS = {
     "gathering": "#ffd23f",
@@ -61,6 +63,34 @@ class MapData:
                         for r in raw["regions"]}
         self.landmarks = {l["id"]: l["position"] for l in raw["landmarks"]}
 
+    def region_for(self, location: dict) -> str | None:
+        """The POI's region id. Potservers sometimes gives only a name, and one that differs a
+        little from the map's ("Coastland Swamp" for the map's "Coastal Swamp"): match by name then."""
+        rid = location.get("region_id")
+        if rid in self.regions or not location.get("name"):
+            return rid
+        want = location["name"].lower()
+        scored = sorted(((fuzz.ratio(want, name.lower()), r) for r, (_, _, name) in self.regions.items()), reverse=True)
+        if scored and scored[0][0] >= 85 and (len(scored) < 2 or scored[0][0] - scored[1][0] >= 5):
+            return scored[0][1]
+        return rid
+
+    def item_points(self, kinds: list[str], region_id: str | None) -> np.ndarray:
+        """Spawns of an item (any of its kinds, e.g. Conch = clams, seashells, spiny conch) in the
+        POI. Only if there are none at all: the nearest few within FALLBACK_REACH of it. Spawns far
+        away would send you across the map for a quest that's done here."""
+        pts = [self.kinds[k] for k in kinds if k in self.kinds and len(self.kinds[k])]
+        if not pts or region_id not in self.regions:
+            return np.zeros((0, 2), np.float32)
+        pts = np.vstack(pts)
+        poly = self.regions[region_id][0]
+        d = np.array([cv2.pointPolygonTest(poly, (float(x), float(y)), True) for x, y in pts])
+        inside = d >= -NEAR_POI
+        if inside.any():
+            return pts[inside]
+        near = np.nonzero(d >= -FALLBACK_REACH)[0]
+        return pts[near[np.argsort(-d[near])][:FALLBACK_NEAREST]]
+
     def kinds_for_item(self, item: dict) -> list[str]:
         if item.get("marker_kinds"):
             return [k for k in item["marker_kinds"] if k in self.kinds]
@@ -92,10 +122,11 @@ class MapData:
 
 
 def convert(q: dict, md: MapData) -> Quest | None:
-    region_id = (q.get("location") or {}).get("region_id")
+    region_id = md.region_for(q.get("location") or {})
     poi = (q.get("location") or {}).get("name") or ""
     points, targets, objectives = [], [], []
     per_objective: dict[str, list] = {}
+    kinds_of: dict[str, list] = {}
     for t in q["tasks"]:
         ttype, count = t["type"], t.get("count")
         items = {(i.get("id"), i.get("name")): i for i in (t.get("items") or [])}.values()  # drop diet duplicates
@@ -112,8 +143,12 @@ def convert(q: dict, md: MapData) -> Quest | None:
             if obj:
                 objectives.append(obj)
             if ttype in ("gather", "deliver", "waystone_cooldown"):
-                mine = [px(md.map, p) for k in md.kinds_for_item(it) for p in md.points_near_region(k, region_id)]
+                kinds = md.kinds_for_item(it)
+                mine = [px(md.map, p) for p in md.item_points(kinds, region_id)]
                 points.extend(mine)
+                if obj and kinds:
+                    kinds_of.setdefault(obj, [])
+                    kinds_of[obj] += [k for k in kinds if k not in kinds_of[obj]]
                 if obj and mine:
                     per_objective.setdefault(obj, []).extend(mine)
         if ttype == "waystone_cooldown":
@@ -128,6 +163,9 @@ def convert(q: dict, md: MapData) -> Quest | None:
                     targets.append(px(md.map, md.regions[it["id"]][1]))
             if not targets and region_id in md.regions:
                 targets.append(px(md.map, md.regions[region_id][1]))
+    if not points and not targets and region_id in md.regions and any(t["type"] == "gather" for t in q["tasks"]):
+        # Nothing to collect in the data anywhere near this POI: at least show where the quest is.
+        targets.append(px(md.map, md.regions[region_id][1]))
     if not points and not targets:
         return None  # e.g. fishing quests: no fixed location
     center = px(md.map, md.regions[region_id][1]) if region_id in md.regions else (targets or points)[0]
@@ -136,6 +174,7 @@ def convert(q: dict, md: MapData) -> Quest | None:
         id=q["id"], poi=poi, type=q.get("type") or "", objectives=list(dict.fromkeys(objectives)),
         targets=list(dict.fromkeys(targets)), center=center, source="potservers",
         objective_points={o: sorted(set(ps)) for o, ps in per_objective.items()},
+        objective_kinds=kinds_of,
     )
 
 

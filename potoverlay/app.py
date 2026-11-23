@@ -30,8 +30,8 @@ from .locator import Fix, MapLocator, build_minimap_mask  # noqa: E402
 from .mapdetect import MultiMapTracker  # noqa: E402
 from .mapview import MapScreenDetector, MapWindowProbe, layout_view_layer, layout_view_markers  # noqa: E402
 from .layers import (FOOD_GROUPS, HOARD_LISTS, available_kinds, hoard_layer, hoard_type,  # noqa: E402
-                     layer_legend, load_layers)
-from .markers import OverlayState, assign_colors, layout_layer, layout_markers  # noqa: E402
+                     layer_legend, load_layers, spawn_index)
+from .markers import OverlayState, assign_colors, item_color, layout_layer, layout_markers  # noqa: E402
 from .overlay import MapScreenOverlay, Overlay  # noqa: E402
 from .quests import HOARD_KEY, ActiveQuestTracker, Quest, QuestDB, objective_id  # noqa: E402
 from .questlog import QuestLog  # noqa: E402
@@ -72,6 +72,9 @@ class TrackerWorker(QThread):
         # {...}); its layer (every spawn of its items on this map) is built when needed, then cached.
         self._hoard: tuple | None = None
         self._hoard_cache: tuple = (None, None)  # (key, layer)
+        # Every spawn on the map by kind: active quests' items near you are shown wherever they are.
+        self._spawns: dict = {}
+        self._near_radius = 400.0  # map px the minimap shows around you (updated every frame)
         self._layers_map = ""
         self.show_all = bool(cfg["show_all_quests"])
         self._stop = False
@@ -99,6 +102,7 @@ class TrackerWorker(QThread):
 
     def _load_layers(self, map_name: str) -> None:
         self._layers = load_layers(map_name, list(self.cfg.get("layers") or []))
+        self._spawns = spawn_index(map_name)
         self._layers_map = map_name
         self._fresh = None
         if self.cfg.get("fresh_water"):
@@ -120,6 +124,21 @@ class TrackerWorker(QThread):
         layer = self._hoard_cache[1]
         return self._layers + ([layer] if layer is not None else [])
 
+    def _near(self, player):
+        """For pick_labeled: every spawn of the given kinds within minimap reach of the player."""
+        spawns, r = self._spawns, self._near_radius
+        px, py = float(player[0]), float(player[1])
+
+        def near(kinds) -> list:
+            out = []
+            for k in kinds:
+                p = spawns.get(k)
+                if p is not None and len(p):
+                    sel = p[np.hypot(p[:, 0] - px, p[:, 1] - py) <= r]
+                    out += [(float(x), float(y)) for x, y in sel]
+            return out
+        return near
+
     def _zones(self, to_screen, x0: float, y0: float, x1: float, y1: float) -> list:
         fresh = getattr(self, "_fresh", None)
         return fresh.project(to_screen, x0, y0, x1, y1) if fresh else []
@@ -137,8 +156,8 @@ class TrackerWorker(QThread):
         if self.show_all:
             shown = [(q, q.name) for q in db.quests if q.points or q.targets]
         else:
-            shown = pick_labeled(self.active, index, player)
-        colors = {} if self.show_all else assign_colors([name for _, name in shown])
+            shown = pick_labeled(self.active, index, player, self._near(player))
+        colors = {} if self.show_all else assign_colors([name for _, name in shown], item_colors(shown))
         items = [(name, colors.get(name) or q.color or self.cfg["default_marker_color"], q.points, q.targets)
                  for q, name in shown]
         markers = layout_view_markers(view, locator, items, mon["width"], mon["height"])
@@ -269,11 +288,13 @@ class TrackerWorker(QThread):
                 f = Fix(smooth, 0, 0)
                 player = locator.work_to_full(f.apply([[w / 2.0, h / 2.0]]))[0]
                 last_player = player
+                # Map pixels from the minimap's centre to its corner: quest items that close are shown.
+                self._near_radius = 0.5 * math.hypot(w, h) * f.scale / locator.work_scale
                 if self.show_all:
                     shown = [(q, q.name) for q in db.quests if q.points or q.targets]
                 else:
-                    shown = pick_labeled(self.active, index, player)
-                colors = {} if self.show_all else assign_colors([name for _, name in shown])
+                    shown = pick_labeled(self.active, index, player, self._near(player))
+                colors = {} if self.show_all else assign_colors([name for _, name in shown], item_colors(shown))
                 items = [
                     (name, colors.get(name) or q.color or cfg["default_marker_color"],
                      locator.full_to_minimap(f, q.points), locator.full_to_minimap(f, q.targets))
@@ -348,12 +369,13 @@ def _item_name(q: Quest, key: str | None) -> str | None:
     return key.split(":", 1)[1].title()
 
 
-def pick_labeled(active: list, index: dict[str, Quest], player) -> list[tuple[Quest, str]]:
+def pick_labeled(active: list, index: dict[str, Quest], player, nearby=None) -> list[tuple[Quest, str]]:
     """For each active objective (candidate quests, title shown in game, objective id), the
     nearest catalog version and the name to show. Only the items of objectives listed on the HUD
     get markers: a finished objective leaves the list, and its markers go with it. Item objectives
     are named after their item ("Death Cap", "Chanterelle Mushroom"), so two items of one quest get
-    their own colour and legend line; other quests show their title."""
+    their own colour and legend line; other quests show their title.
+    `nearby(kinds)`: spawns of those kinds close to the player, added whatever POI they're in."""
     picked: dict[tuple[str, str], tuple[Quest, str, set]] = {}
     for item in active:
         if isinstance(item, tuple):
@@ -377,7 +399,28 @@ def pick_labeled(active: list, index: dict[str, Quest], player) -> list[tuple[Qu
         # Places to go (drop-off, waystone) belong to the quest: draw them once, not per item.
         targets = q.targets if q.key not in ringed else []
         ringed.add(q.key)
-        out.append((replace(q, points=q.points_for(ids), targets=targets), name))
+        pts = q.points_for(ids)
+        extra = nearby(q.kinds_for(ids)) if nearby else []
+        if extra and pts:  # the quest's own spawns are among them: add each spawn once
+            a, e = np.asarray(pts, np.float64), np.asarray(extra, np.float64)
+            dup = (np.abs(e[:, None, :] - a[None, :, :]).max(2) < 1.0).any(1)
+            pts = pts + [p for p, d in zip(extra, dup) if not d]
+        elif extra:
+            pts = list(extra)
+        kinds = {o: k for o, k in q.objective_kinds.items() if objective_id(o) in ids} or q.objective_kinds
+        out.append((replace(q, points=pts, targets=targets, objective_kinds=kinds), name))
+    return out
+
+
+def item_colors(shown: list[tuple[Quest, str]]) -> dict[str, str]:
+    """Entries named after an item ("Death Cap"), or quests with one item: that item's own colour."""
+    out = {}
+    for q, name in shown:
+        kinds = q.kinds_for(())
+        if kinds and (name != q.name or len(q.objective_kinds) == 1):
+            color = item_color(kinds[0])
+            if color:
+                out[name] = color
     return out
 
 
