@@ -117,6 +117,10 @@ DEFAULTS: dict = {
 
     # --- Behaviour ---
     "only_when_game_focused": True,
+    # ...but stay on while the game is still the window you see where the minimap and quest list
+    # are, e.g. you clicked a window on another screen and went back to the game with a controller
+    # (which doesn't give the game the focus back). Tray: "Stay on when I click another window".
+    "stay_when_game_visible": True,
     "game_window_titles": ["path of titans", "pathoftitans"],
     # Global hotkey that shows/hides the overlay. Examples: "F8", "ctrl+shift+o".
     "toggle_hotkey": "F8",

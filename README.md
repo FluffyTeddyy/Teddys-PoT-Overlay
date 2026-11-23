@@ -105,7 +105,7 @@ All settings are listed with comments in [potoverlay/config.py](potoverlay/confi
 - `auto_detect_map`, `map_search_after_s`: automatic map switching.
 - `cpu_threads`: CPU threads for matching (default 2, so the game keeps its CPU).
 - `map_screen_mode`, `map_screen_fps`, `map_screen_min_inliers`: in-game map markers. Raise `map_screen_min_inliers` if something other than the map ever triggers them.
-- `only_when_game_focused`: markers hide when you alt-tab.
+- `only_when_game_focused`: markers hide when you alt-tab. With `stay_when_game_visible` (on by default; tray: *Stay on when I click another window*) they stay while the game is still the window you see where the minimap and quest list are, e.g. after clicking a window on another screen and going back to the game with a controller.
 
 ## Tools and tests
 

@@ -3,12 +3,15 @@
     python -m tools.make_release        # -> dist/PoT-Quest-Overlay-<version>.zip
 
 Left out (rebuilt by setup.bat on the other PC): .venv, .cache, map images, raw Potservers data.
-Also left out: tests (their screenshots show your game, chat names included), debug images, and
-config.json (your personal settings).
+Also left out: tests (their screenshots show your game, chat names included), debug images,
+config.json (your personal settings), and every file git ignores, so local-only extras
+(.git/info/exclude, e.g. potoverlay/local_extras.py) never ship.
 """
 from __future__ import annotations
 
 import datetime
+import shutil
+import subprocess
 import sys
 import zipfile
 from pathlib import Path
@@ -34,11 +37,27 @@ INCLUDE = [
 EXCLUDE_NAMES = {"make_release.py", "publish_release.py"}  # maintainer tools, not for players
 
 
+def git_ignored(paths: list[Path]) -> set[Path]:
+    """Which of these files git ignores (.gitignore and the local-only .git/info/exclude)."""
+    git = shutil.which("git") or r"C:\Program Files\Git\cmd\git.exe"
+    rels = "".join(p.relative_to(ROOT).as_posix() + "\0" for p in paths)
+    try:
+        r = subprocess.run([git, "check-ignore", "--stdin", "-z"], cwd=ROOT, input=rels,
+                           capture_output=True, text=True, encoding="utf-8")
+    except OSError as e:
+        raise SystemExit(f"can't run git to leave out ignored files ({e})")
+    if r.returncode not in (0, 1):  # 1 = none of them ignored
+        raise SystemExit(f"git check-ignore failed: {r.stderr.strip()}")
+    return {ROOT / rel for rel in r.stdout.split("\0") if rel}
+
+
 def files() -> list[Path]:
     out: list[Path] = []
     for pattern in INCLUDE:
         out += [p for p in ROOT.glob(pattern) if p.is_file() and p.name not in EXCLUDE_NAMES]
-    return sorted(set(out))
+    out = sorted(set(out))
+    ignored = git_ignored(out)
+    return [p for p in out if p not in ignored]
 
 
 def main() -> int:

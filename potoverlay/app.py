@@ -37,7 +37,12 @@ from .overlay import MapScreenOverlay, Overlay  # noqa: E402
 from .quests import HOARD_KEY, NEST_KEY, ActiveQuestTracker, Quest, QuestDB, objective_id  # noqa: E402
 from .questlog import QuestLog  # noqa: E402
 from .updates import UpdateChecker  # noqa: E402
-from .winutil import GlobalHotkey, game_is_focused  # noqa: E402
+from .winutil import GlobalHotkey, game_in_view, game_is_focused, region_points  # noqa: E402
+
+try:  # extras kept on this PC only: git-ignored, never in a release, nothing happens without it
+    from . import local_extras  # noqa: E402
+except ImportError:
+    local_extras = None
 
 log = logging.getLogger("potoverlay")
 
@@ -78,6 +83,7 @@ class TrackerWorker(QThread):
         self._near_radius = 400.0  # map px the minimap shows around you (updated every frame)
         self._underwater = None  # spawns too deep to reach without diving, for this map
         self._layers_map = ""
+        self.position: dict | None = None  # latest player position (unsmoothed), for extras
         self.show_all = bool(cfg["show_all_quests"])
         self._stop = False
         self._lock = threading.Lock()
@@ -246,7 +252,7 @@ class TrackerWorker(QThread):
                     self._load_layers(self._map_name)
                     self._map_dirty = False
 
-            if cfg["only_when_game_focused"] and not game_is_focused(cfg["game_window_titles"]):
+            if not game_shown(cfg, mon, mm):
                 self.state_ready.emit(OverlayState(False))
                 if on_map_screen:
                     on_map_screen = False
@@ -305,6 +311,10 @@ class TrackerWorker(QThread):
             if fix is not None:
                 smooth = _blend(smooth, fix.M, float(cfg["smoothing"]), w, h)
                 last_ok = now
+                # Where the player is (minimap centre), unsmoothed.
+                self.position = {"map": name, "player": locator.work_to_full(fix.apply([[w / 2.0, h / 2.0]]))[0],
+                                 "time": time.monotonic(), "minimap": img,
+                                 "map_px_per_minimap_px": float(fix.scale) / locator.work_scale}
             elif smooth is not None and now - last_ok > cfg["lost_after_s"]:
                 smooth = None
                 if locator:
@@ -571,8 +581,7 @@ class QuestWorker(QThread):
                     self._do_refresh(ocr, grab, region, upscale)
                 except Exception:
                     log.exception("Quest refresh failed")
-            elif not self.paused and (not cfg["only_when_game_focused"]
-                                      or game_is_focused(cfg["game_window_titles"])):
+            elif not self.paused and game_shown(cfg, grab.monitor, region):
                 try:
                     lines = ocr.read_lines(grab.grab(region), upscale)
                     self.tracker.update(lines)
@@ -587,6 +596,16 @@ class QuestWorker(QThread):
             _sleep_until(t0 + float(cfg["ocr_interval_s"]), lambda: self._stop or self._refresh)
         grab.close()
         ocr.close()
+
+
+def game_shown(cfg: dict, monitor: dict, region: dict) -> bool:
+    """Whether to show markers / read the screen: the game is in front, or (stay_when_game_visible)
+    it's still the window you see over the whole region, e.g. after a click on another screen."""
+    if not cfg["only_when_game_focused"]:
+        return True
+    if cfg.get("stay_when_game_visible", True):
+        return game_in_view(cfg["game_window_titles"], region_points(monitor, region))
+    return game_is_focused(cfg["game_window_titles"])
 
 
 def make_icon() -> QIcon:
@@ -635,6 +654,7 @@ class App:
 
         self.tray = QSystemTrayIcon(make_icon())
         self.tray.setToolTip("PoT Quest Overlay")
+        self.extras = local_extras.Extras(self) if local_extras else None
         self._build_menu()
         self.tray.show()
 
@@ -920,6 +940,11 @@ class App:
         a.toggled.connect(self.set_hide_underwater)
         menu.addAction(a)
 
+        a = QAction("Stay on when I click another window (game still in view)", menu, checkable=True)
+        a.setChecked(bool(self.cfg.get("stay_when_game_visible", True)))
+        a.toggled.connect(self.set_stay_when_game_visible)
+        menu.addAction(a)
+
         a = QAction("Show all quests (ignore quest panel)", menu, checkable=True)
         a.setChecked(bool(self.cfg["show_all_quests"]))
         a.toggled.connect(self.set_show_all)
@@ -1006,6 +1031,8 @@ class App:
         menu.addSeparator()
         menu.addAction(f"Refresh quests now ({self.cfg.get('refresh_hotkey') or 'no hotkey'})",
                        self.refresh_quests)
+        if self.extras:
+            self.extras.add_menu(menu)
         menu.addAction("Show last quest panel text...", self.show_last_text)
         menu.addAction("Open quest log...",
                        lambda: QDesktopServices.openUrl(QUrl.fromLocalFile(str(C.DATA_DIR / "quest_log.txt"))))
@@ -1044,6 +1071,12 @@ class App:
         """Tray: show every spawn of the nest materials, in their item colours."""
         self.cfg["nesting_mode"] = bool(on)  # the tracker reads this live
         self._save_cfg_key("nesting_mode", bool(on))
+
+    def set_stay_when_game_visible(self, on: bool) -> None:
+        """Tray: keep the overlay up while the game is still in plain sight behind another window's
+        focus (a click on another screen, then back to the game with a controller)."""
+        self.cfg["stay_when_game_visible"] = bool(on)  # both workers read this live
+        self._save_cfg_key("stay_when_game_visible", bool(on))
 
     def set_hide_underwater(self, on: bool) -> None:
         """Tray: hide quest and Hoard items too deep to reach without diving."""
@@ -1189,6 +1222,8 @@ class App:
         for hk in (self.hotkey, self.refresh_hotkey):
             if hk:
                 hk.stop()
+        if self.extras:
+            self.extras.stop()
         self.tray.hide()
 
 
