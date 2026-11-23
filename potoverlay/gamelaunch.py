@@ -94,7 +94,9 @@ def start_launcher() -> bool:
     if exe is None:
         log.info("Alderon Games Launcher not found; start Path of Titans yourself")
         return False
+    # Its own log (Electron, libtorrent, update checks...) goes nowhere instead of into our window.
     subprocess.Popen([str(exe)], cwd=str(exe.parent), close_fds=True,
+                     stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                      creationflags=getattr(subprocess, "DETACHED_PROCESS", 0))
     return True
 
