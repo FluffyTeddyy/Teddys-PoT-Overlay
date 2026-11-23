@@ -75,6 +75,8 @@ HOARD_LISTS = {
                   "Turtle Shell", "Charred Wood", "Ammonites", "Pearlescent Shells", "Barnacle", "Jellyfish",
                   "Coral Chunks", "Snagged Fur", "Shark Teeth", "Sand Dollars", "Fish Bones", "Seashells", "Clam",
                   "Colorful Shell", "Cuttlefish Bone"],
+    # The game's seven nest building resources (also the "Nesting Materials" Hoard).
+    "Nesting Materials": ["Bones", "Branches", "Kelp", "Mud", "Reeds", "Rock", "Roots"],
 }
 HOARD_COLOR = "#ffe14d"
 # HUD names that differ from Potservers' marker names.
@@ -159,6 +161,31 @@ def spawn_index(map_name: str) -> dict[str, np.ndarray]:
     if not data:
         return {}
     return {m["id"]: to_image(map_name, m["points"]) for m in data.get("markers", []) if m.get("points")}
+
+
+# Nesting mode (tray): the game's nest building resources (Blueprints/Nesting/ConstructionResources/
+# CR_*), each in its item colour with its own shape, as the four pale ones look alike in colour.
+NEST_MATERIALS = [  # (Potservers kind, label, marker shape)
+    ("bones", "Bones", "triangle"),
+    ("branches", "Branches", "square"),
+    ("rocks", "Rocks", "diamond"),
+    ("mud", "Mud", "dot"),
+    ("roots", "Roots", "leaf"),
+    ("reeds", "Reeds", "leaf"),
+    ("kelp", "Kelp", "leaf"),
+]
+NEST_KINDS = {k for k, _, _ in NEST_MATERIALS}
+
+
+def nest_layers(map_name: str) -> list[Layer]:
+    """Every spawn of each nest material on this map, one layer per material."""
+    data = _map_data(map_name)
+    if not data:
+        return []
+    pts = {m["id"]: m["points"] for m in data.get("markers", []) if m["id"] in NEST_KINDS and m.get("points")}
+    # True item colours: the shapes already tell the look-alikes apart.
+    return [Layer(LayerKind(k, label, item_color(k) or "#d9d7c0", style, "Nesting"), to_image(map_name, pts[k]))
+            for k, label, style in NEST_MATERIALS if k in pts]
 
 
 def hoard_type(label: str) -> str:

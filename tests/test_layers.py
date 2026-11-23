@@ -254,10 +254,10 @@ def test_hud_objectives_and_hoard() -> None:
     cols = assign_colors(names, item_colors(picked))
     check("both items listed: own legend line and colour each",
           names == ["Chanterelle Mushroom", "Death Cap"] and len(set(cols.values())) == 2, f"{names} {cols}")
+    from potoverlay.markers import item_color
     r, g, b = _rgb(cols.get("Chanterelle Mushroom", "#000000"))
-    r2, g2, b2 = _rgb(cols.get("Death Cap", "#000000"))
-    check("...in the items' own colours: chanterelle orange, death cap green", r > g > b and g2 > r2 and g2 > b2,
-          str(cols))
+    check("...in the items' own colours (chanterelle orange)", r > g > b
+          and cols.get("Death Cap") == item_color("deathcaps"), str(cols))
     check("their spawns don't overlap", not set(picked[0][0].points) & set(picked[1][0].points))
     w = TrackerWorker.__new__(TrackerWorker)
     w._layers, w._hoard, w._hoard_cache = [], None, (None, None)
@@ -485,6 +485,55 @@ def test_underwater() -> None:
           f"{full} -> {dry}")
 
 
+def test_nesting() -> None:
+    print("nesting mode: nest materials")
+    from potoverlay.app import TrackerWorker
+    from potoverlay.layers import NEST_KINDS, _map_data, hoard_kinds, layer_legend
+    w = TrackerWorker.__new__(TrackerWorker)
+    w._layers, w._hoard, w._hoard_cache = [], None, (None, None)
+    w.cfg = {"layers": ["roots", "berry"], "nesting_mode": False}
+    w._load_layers("riparia")
+    check("off (default): only the food layers", C.DEFAULTS.get("nesting_mode") is False
+          and sorted(l.kind.id for l in w._shown_layers()) == ["berry", "roots"])
+    w.cfg["nesting_mode"] = True
+    shown = w._shown_layers()
+    ids = [l.kind.id for l in shown]
+    check("on: all seven nest materials, roots once (not again as food)",
+          set(ids) == NEST_KINDS | {"berry"} and ids.count("roots") == 1 and all(len(l.points) > 50 for l in shown),
+          str({l.kind.id: len(l.points) for l in shown}))
+    nest = [l for l in shown if l.kind.group == "Nesting"]
+    check("each material told apart by colour or shape", len({(l.kind.color, l.kind.style) for l in nest}) == 7
+          and len({l.kind.style for l in nest}) >= 4, str([(l.kind.label, l.kind.color, l.kind.style) for l in nest]))
+    lines = [e[0] for e in layer_legend(shown)]
+    check("a legend line per material", all(x in lines for x in ("Bones", "Branches", "Rocks", "Mud", "Roots", "Reeds", "Kelp")),
+          str(lines))
+    from potoverlay.layers import HOARD_LISTS
+    kinds = set(hoard_kinds(_map_data("riparia")["markers"], HOARD_LISTS["Nesting Materials"]))
+    check("Hoard: Nesting Materials finds the same seven items", kinds == NEST_KINDS, str(sorted(kinds)))
+
+    # The nest quest, read off the HUD (as in a screenshot), next to a normal quest.
+    from potoverlay.app import pick_labeled
+    from potoverlay.quests import NEST_KEY, QuestDB
+    db = QuestDB.load(C.quest_file("riparia"), "riparia")
+    lines = ["Quests", "Finish Nest Construction", "Finish constructing your nest!",
+             "Gather Mushrooms", "- Collect 15 Death Cap 3/15"]
+    act = _tracked(db, lines)
+    act = _tracked(db, lines)
+    keys = [k for _, _, k in act]
+    check("'Finish Nest Construction' is recognised, the other quest too",
+          NEST_KEY in keys and "collect:death cap" in keys, str([(n, k) for _, n, k in act]))
+    w.cfg["nesting_mode"] = False
+    w.set_active(act)
+    ids = {l.kind.id for l in w._shown_layers()}
+    check("while it's listed: nest materials shown without nesting mode", NEST_KINDS <= ids, str(sorted(ids)))
+    shown = [n for _, n in pick_labeled(act, db.by_key(), (1979.0, 2441.7))]
+    check("...and it isn't drawn as a quest of its own", shown == ["Death Cap"], str(shown))
+    w.set_active([a for a in act if a[2] != NEST_KEY])
+    left = [l.kind.id for l in w._shown_layers()]
+    check("quest done (gone from the list): nest materials go too (roots stays: it's on under Food)",
+          not any(l.kind.group == "Nesting" for l in w._shown_layers()) and sorted(left) == ["berry", "roots"], str(left))
+
+
 def _tracked(db, lines):
     from potoverlay.quests import ActiveQuestTracker
     t = ActiveQuestTracker(db)
@@ -504,5 +553,6 @@ if __name__ == "__main__":
     test_spawn_fix()
     test_quest_places()
     test_underwater()
+    test_nesting()
     print("\nALL PASSED" if failures == 0 else f"\n{failures} FAILED")
     sys.exit(1 if failures else 0)

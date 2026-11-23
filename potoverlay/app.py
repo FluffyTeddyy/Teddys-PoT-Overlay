@@ -31,10 +31,10 @@ from .locator import Fix, MapLocator, build_minimap_mask  # noqa: E402
 from .mapdetect import MultiMapTracker  # noqa: E402
 from .mapview import MapScreenDetector, MapWindowProbe, layout_view_layer, layout_view_markers  # noqa: E402
 from .layers import (FOOD_GROUPS, HOARD_LISTS, available_kinds, hoard_layer, hoard_type,  # noqa: E402
-                     Layer, layer_legend, load_layers, spawn_index)
+                     NEST_KINDS, Layer, layer_legend, load_layers, nest_layers, spawn_index)
 from .markers import OverlayState, assign_colors, item_color, layout_layer, layout_markers  # noqa: E402
 from .overlay import MapScreenOverlay, Overlay  # noqa: E402
-from .quests import HOARD_KEY, ActiveQuestTracker, Quest, QuestDB, objective_id  # noqa: E402
+from .quests import HOARD_KEY, NEST_KEY, ActiveQuestTracker, Quest, QuestDB, objective_id  # noqa: E402
 from .questlog import QuestLog  # noqa: E402
 from .updates import UpdateChecker  # noqa: E402
 from .winutil import GlobalHotkey, game_is_focused  # noqa: E402
@@ -97,6 +97,8 @@ class TrackerWorker(QThread):
         hoard = next((it for it in self.active if isinstance(it, tuple) and len(it) > 2 and it[2] == HOARD_KEY), None)
         # (Hoard entries carry the item names read from the HUD where quests carry candidates.)
         self._hoard = (hoard[1], frozenset(hoard[0])) if hoard else None
+        # "Finish Nest Construction" in the quest list: show the nest materials (as nesting mode).
+        self._nest_quest = any(isinstance(it, tuple) and len(it) > 2 and it[2] == NEST_KEY for it in self.active)
 
     def _leave_map_screen(self) -> None:
         self.view_ready.emit(OverlayState(False))
@@ -115,10 +117,17 @@ class TrackerWorker(QThread):
                 log.exception("Could not work out fresh water for %s", map_name)
 
     def _shown_layers(self) -> list:
-        """Food layers, plus every item of the Hoard event (Gemstones, Beachcomber...) in the quest list."""
+        """Food layers, nest materials (nesting mode), plus every item of the Hoard event (Gemstones,
+        Beachcomber...) in the quest list."""
+        base = self._layers
+        if self.cfg.get("nesting_mode") or getattr(self, "_nest_quest", False):
+            if getattr(self, "_nest_cache", (None, None))[0] != self._layers_map:
+                self._nest_cache = (self._layers_map, nest_layers(self._layers_map))
+            # a material also switched on under Food is drawn once, as a nest material
+            base = [l for l in base if l.kind.id not in NEST_KINDS] + self._nest_cache[1]
         hoard = getattr(self, "_hoard", None)
         if not hoard:
-            return self._layers
+            return base
         label, items = hoard
         # Known Hoard types have a fixed list: a new item misread doesn't need a rebuild.
         uw = getattr(self, "_underwater", None) if self.cfg.get("hide_underwater") else None
@@ -129,7 +138,7 @@ class TrackerWorker(QThread):
                 layer = Layer(layer.kind, layer.points[~uw.mask(layer.points)])
             self._hoard_cache = (key, layer)
         layer = self._hoard_cache[1]
-        return self._layers + ([layer] if layer is not None else [])
+        return base + ([layer] if layer is not None else [])
 
     def _near(self, player, everywhere: bool = False):
         """For pick_labeled: every spawn of the given kinds within minimap reach of the player
@@ -400,7 +409,7 @@ def pick_labeled(active: list, index: dict[str, Quest], player, nearby=None) -> 
             group, label, key = (tuple(item) + (None,))[:3]
         else:
             group, label, key = item, None, None
-        if key == HOARD_KEY:  # the Hoard event: shown as a layer of its items, not a quest
+        if key in (HOARD_KEY, NEST_KEY):  # Hoard event, nest quest: shown as layers of their items
             continue
         cands = [index[k] for k in group if k in index]
         if not cands:
@@ -901,6 +910,11 @@ class App:
         a.toggled.connect(self.set_map_all_item_spawns)
         menu.addAction(a)
 
+        a = QAction("Nesting mode: show nest materials", menu, checkable=True)
+        a.setChecked(bool(self.cfg.get("nesting_mode")))
+        a.toggled.connect(self.set_nesting_mode)
+        menu.addAction(a)
+
         a = QAction("Hide underwater items (my dinosaur can't dive)", menu, checkable=True)
         a.setChecked(bool(self.cfg.get("hide_underwater")))
         a.toggled.connect(self.set_hide_underwater)
@@ -1025,6 +1039,11 @@ class App:
         self.overlay.update()
         self.map_overlay.user_hidden = not on
         self.map_overlay.set_state(self.map_overlay.state)
+
+    def set_nesting_mode(self, on: bool) -> None:
+        """Tray: show every spawn of the nest materials, in their item colours."""
+        self.cfg["nesting_mode"] = bool(on)  # the tracker reads this live
+        self._save_cfg_key("nesting_mode", bool(on))
 
     def set_hide_underwater(self, on: bool) -> None:
         """Tray: hide quest and Hoard items too deep to reach without diving."""

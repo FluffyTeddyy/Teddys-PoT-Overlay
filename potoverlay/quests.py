@@ -270,6 +270,19 @@ def is_hoard_title(text: str) -> bool:
     return "hoard" in n or "scavenger" in n
 
 
+# The nest tutorial quest (BP_Quest_FinishNestConstruction): "Finish Nest Construction" / "Finish
+# constructing your nest!". Not in Potservers' data and it lists no items; while it's in the quest
+# list the app shows the nest materials (as in nesting mode).
+NEST_KEY = "title:finish nest construction"
+NEST_TITLE = "Finish Nest Construction"
+
+
+def is_nest_quest(text: str) -> bool:
+    """The nest quest's title or its objective line, read loosely (OCR noise)."""
+    n = normalize(text)
+    return bool(n) and max(fuzz.ratio(n, "finish nest construction"), fuzz.ratio(n, "finish constructing your nest")) >= 80
+
+
 def hoard_label(title: str) -> str:
     """"Hoard;GemstoneS" -> "Hoard: Gemstones". Known types are matched loosely (OCR noise), any
     other is taken as read."""
@@ -482,6 +495,11 @@ class ActiveQuestTracker:
                 # Its "candidates" are the item names read (the app turns those into markers).
                 out.append(Detection(HOARD_KEY, frozenset(e.items), None, label, label))
                 e.titles = [t for t in e.titles if not is_hoard_title(t)]
+            if any(is_nest_quest(t) for t in e.titles) or any(is_nest_quest(o) for o in e.objectives):
+                # The nest quest: the app shows the nest materials while it's listed.
+                out.append(Detection(NEST_KEY, frozenset(), None, NEST_TITLE, NEST_TITLE))
+                e.titles = [t for t in e.titles if not is_nest_quest(t)]
+                e.objectives = [o for o in e.objectives if not is_nest_quest(o)]
             # Title lines: each one alone, or two lines joined when a long title wrapped.
             singles: list[tuple[set[str], str]] = []
             i = 0

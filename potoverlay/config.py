@@ -62,6 +62,9 @@ DEFAULTS: dict = {
     # Hide quest and Hoard items too deep to reach without diving, for dinosaurs that can't dive
     # (tray toggle). Underwater spawns are baked into data/underwater/ by tools/build_underwater.py.
     "hide_underwater": False,
+    # Nesting mode (tray toggle): show every spawn of the nest materials (bones, branches, kelp, mud,
+    # reeds, rocks, roots) in their item colours, each with its own marker shape.
+    "nesting_mode": False,
     # Seconds without a minimap match before checking whether the map screen is open.
     "map_screen_after_s": 0.3,
     # Also check for the map screen this often while the minimap is tracking (the minimap can still
